@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">OpenLocate</string>
+
+    <!--Exception messages-->
+    <string name="invalid_source_message">Invalid Source. Configure a valid source to move forward.</string>
+    <string name="location_service_running_message">Location tracking is already active. Please stop the previous tracking before starting,</string>
+    <string name="illegal_configuration_message">BaseURL is not configured. Please set it before tracking.</string>
+    <string name="location_disabled_message">Location is switched off in the settings. Please enable it before continuing.</string>
+    <string name="location_permission_denied_message">Location permission is denied. Please enable location permission.</string>
+</resources>

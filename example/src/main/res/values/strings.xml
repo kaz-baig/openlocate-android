@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">OpenLocate</string>
+    <string name="source_id_placeholder">Enter source id</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="error_for_source_id">Please enter a sourceId to continue</string>
+</resources>
