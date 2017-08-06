@@ -24,9 +24,6 @@ package com.openlocate.android.core;
 import android.content.Context;
 import android.content.Intent;
 
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.openlocate.android.R;
 import com.openlocate.android.config.Configuration;
 import com.openlocate.android.exceptions.IllegalConfigurationException;
@@ -34,8 +31,6 @@ import com.openlocate.android.exceptions.InvalidSourceException;
 import com.openlocate.android.exceptions.LocationConfigurationException;
 import com.openlocate.android.exceptions.LocationPermissionException;
 import com.openlocate.android.exceptions.LocationServiceConflictException;
-
-import java.io.IOException;
 
 public class OpenLocate implements OpenLocateLocationTracker {
     private static OpenLocate sharedInstance = null;
@@ -86,10 +81,21 @@ public class OpenLocate implements OpenLocateLocationTracker {
             return;
         }
 
+        AdvertisingInfoTask task = new AdvertisingInfoTask(context, new AdvertisingInfoTaskCallback() {
+            @Override
+            public void onAdvertisingInfoTaskExecute(String advertisingId, boolean isLimitedAdTrackingEnabled) {
+                onFetchAdvertisingInfo(advertisingId, isLimitedAdTrackingEnabled);
+            }
+        });
+        task.execute();
+    }
+
+    private void onFetchAdvertisingInfo(String advertisingId, boolean isLimitedAdTrackingEnabled) {
         Intent intent = new Intent(context, LocationService.class);
+
         updateSourceId(intent);
         updateConfiguration(intent);
-        updateAdvertisingInfo(intent);
+        updateAdvertisingInfo(intent, advertisingId, isLimitedAdTrackingEnabled);
 
         context.startService(intent);
     }
@@ -104,18 +110,9 @@ public class OpenLocate implements OpenLocateLocationTracker {
         intent.putExtra(Constants.SOURCE_ID_KEY, sourceId);
     }
 
-    private void updateAdvertisingInfo(Intent intent) {
-        try {
-            AdvertisingIdClient.Info info = AdvertisingIdClient.getAdvertisingIdInfo(context);
-            if (info != null) {
-                intent.putExtra(Constants.ADVERTISING_ID_KEY, info.getId());
-                intent.putExtra(Constants.LIMITED_AD_TRACKING_ENABLED_KEY, info.isLimitAdTrackingEnabled());
-            }
-        } catch (IOException
-                | GooglePlayServicesNotAvailableException
-                | GooglePlayServicesRepairableException e) {
-            logger.e(e.getMessage());
-        }
+    private void updateAdvertisingInfo(Intent intent, String advertisingId, boolean isLimitedAdTrackingEnabled) {
+        intent.putExtra(Constants.ADVERTISING_ID_KEY, advertisingId);
+        intent.putExtra(Constants.LIMITED_AD_TRACKING_ENABLED_KEY, isLimitedAdTrackingEnabled);
     }
 
     private boolean hasTrackingCapabilities() throws InvalidSourceException, LocationServiceConflictException, IllegalConfigurationException {

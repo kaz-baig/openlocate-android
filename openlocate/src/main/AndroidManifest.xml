@@ -26,7 +26,12 @@
         <service
             android:name="com.openlocate.android.core.DispatchLogService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"
+            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
+            <intent-filter>
+                <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
