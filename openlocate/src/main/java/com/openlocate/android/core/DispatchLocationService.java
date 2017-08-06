@@ -55,7 +55,7 @@ final public class DispatchLocationService extends GcmTaskService {
     }
 
     private void postLocations(HttpClient httpClient, final LocationDataSource dataSource) {
-        final List<SourceLocation> locations = dataSource.popAll();
+        final List<DetailedLocation> locations = dataSource.popAll();
 
         if (locations == null || locations.isEmpty()) {
             return;
@@ -79,10 +79,10 @@ final public class DispatchLocationService extends GcmTaskService {
         );
     }
 
-    private JSONArray getLocationsJsonArray(List<SourceLocation> locationsToPost) {
+    private JSONArray getLocationsJsonArray(List<DetailedLocation> locationsToPost) {
         JSONArray jsonArray = new JSONArray();
 
-        for (SourceLocation location : locationsToPost) {
+        for (DetailedLocation location : locationsToPost) {
             jsonArray.put(location.getJson());
         }
 

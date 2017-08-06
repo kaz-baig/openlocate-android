@@ -66,6 +66,8 @@ public class LocationService extends Service {
     private Logger logger;
 
     private String sourceId;
+    private AdvertisingInfo advertisingInfo;
+
     private String baseUrl;
     private String tcpHost;
     private int tcpPort;
@@ -112,6 +114,11 @@ public class LocationService extends Service {
         baseUrl = intent.getStringExtra(Constants.BASE_URL_KEY);
         tcpHost = intent.getStringExtra(Constants.HOST_KEY);
         tcpPort = intent.getIntExtra(Constants.PORT_KEY, Constants.DEFAULT_PORT);
+
+        advertisingInfo = new AdvertisingInfo(
+                intent.getStringExtra(Constants.ADVERTISING_ID_KEY),
+                intent.getBooleanExtra(Constants.LIMITED_AD_TRACKING_ENABLED_KEY, false)
+        );
     }
 
     private void connectGoogleClient() {
@@ -239,7 +246,7 @@ public class LocationService extends Service {
         public void onLocationChanged(Location location) {
             logger.v(location.toString());
             // TODO: @ulhas remove this hardcoded gps
-            locations.add(new SourceLocation(location, sourceId, LocationProvider.GPS));
+            locations.add(new DetailedLocation(location, sourceId, LocationProvider.GPS, advertisingInfo));
             logger.v("COUNT - " + locations.size());
         }
     }

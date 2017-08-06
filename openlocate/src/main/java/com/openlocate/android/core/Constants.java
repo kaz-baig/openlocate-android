@@ -27,5 +27,8 @@ final class Constants {
     static final String HOST_KEY = "host";
     static final String PORT_KEY = "port";
 
+    static final String ADVERTISING_ID_KEY = "advertising_id";
+    static final String LIMITED_AD_TRACKING_ENABLED_KEY = "limited_ad_tracking_enabled";
+
     static final int DEFAULT_PORT = -1;
 }

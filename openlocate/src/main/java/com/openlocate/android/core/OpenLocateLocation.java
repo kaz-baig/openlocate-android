@@ -26,8 +26,6 @@ import android.location.Location;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Date;
-
 final class OpenLocateLocation implements JsonObjectType {
     private static final String LATITUDE_KEY = "latitude";
     private static final String LONGITUDE_KEY = "longitude";
@@ -71,20 +69,11 @@ final class OpenLocateLocation implements JsonObjectType {
             speed = Float.valueOf(jsonObject.getString(SPEED_KEY));
             bearing = Float.valueOf(jsonObject.getString(BEARING_KEY));
             altitude = jsonObject.getDouble(ALTITUDE_KEY);
-            recordedAt = getRecordedAtFromIso8601(jsonObject.getString(RECORDED_AT_KEY));
+            recordedAt = jsonObject.getLong(RECORDED_AT_KEY);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    private String getRecordedAtInIso8601() {
-        return DateUtils.getIso8601Format(new Date(recordedAt));
-    }
-
-    private long getRecordedAtFromIso8601(String iso8601Format) {
-        Date recordedAt = DateUtils.getDate(iso8601Format);
-        return recordedAt.getTime();
     }
 
     @Override
@@ -98,7 +87,7 @@ final class OpenLocateLocation implements JsonObjectType {
                     .put(ACCURACY_KEY, accuracy)
                     .put(SPEED_KEY, speed)
                     .put(BEARING_KEY, bearing)
-                    .put(RECORDED_AT_KEY, getRecordedAtInIso8601())
+                    .put(RECORDED_AT_KEY, recordedAt)
                     .put(ALTITUDE_KEY, altitude);
         } catch (JSONException exception) {
             jsonObject = null;

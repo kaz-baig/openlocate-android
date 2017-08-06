@@ -44,10 +44,20 @@ public class LocationDataSourceTests {
         dataSource.popAll();
     }
 
+    private DetailedLocation getDetailedLocation() {
+        return new DetailedLocation(
+                123.12,
+                32.234,
+                "",
+                LocationProvider.GPS,
+                new AdvertisingInfo("", true)
+        );
+    }
+
     @Test
     public void testAddLocation() {
         // Given
-        SourceLocation location = new SourceLocation(123.12, 32.234, "", LocationProvider.GPS);
+        DetailedLocation location = getDetailedLocation();
 
         // When
         dataSource.add(location);
@@ -59,11 +69,11 @@ public class LocationDataSourceTests {
     @Test
     public void testLocationPopSize() {
         // Given
-        SourceLocation location = new SourceLocation(123.12, 32.234, "", LocationProvider.GPS);
+        DetailedLocation location = getDetailedLocation();
         dataSource.add(location);
 
         // When
-        List<SourceLocation> locations = dataSource.popAll();
+        List<DetailedLocation> locations = dataSource.popAll();
 
         // Then
         assertEquals(1, locations.size());
@@ -73,9 +83,9 @@ public class LocationDataSourceTests {
     @Test
     public void testLocationAddAll() {
         // Given
-        List<SourceLocation> locations = new ArrayList<>();
-        locations.add(new SourceLocation(123.12, 32.234, "", LocationProvider.GPS));
-        locations.add(new SourceLocation(123.12, 32.234, "", LocationProvider.GPS));
+        List<DetailedLocation> locations = new ArrayList<>();
+        locations.add(getDetailedLocation());
+        locations.add(getDetailedLocation());
 
         // When
         dataSource.addAll(locations);

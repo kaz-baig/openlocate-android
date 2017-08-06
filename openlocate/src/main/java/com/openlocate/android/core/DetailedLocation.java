@@ -26,35 +26,47 @@ import android.location.Location;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-final class SourceLocation implements JsonObjectType, DatabaseJson {
+final class DetailedLocation implements JsonObjectType, DatabaseJson {
     private static final String PROVIDER_KEY = "provider";
     private static final String SOURCE_ID_KEY = "source_id";
     private static final String LOCATION_KEY = "location";
+    private static final String ADVERTISING_ID_KEY = "advertising_id";
+    private static final String LIMITED_AD_TRACKING_ENABLED_KEY = "limited_ad_tracking";
+    private static final String ADVERTISING_ID_TYPE_KEY = "advertising_id_type";
+
+    private static final String ADVERTISING_ID_TYPE = "aaid";
 
     private OpenLocateLocation location;
     private String sourceId;
     private LocationProvider provider;
+    private AdvertisingInfo advertisingInfo;
 
     //For testing only
-    SourceLocation(double lat, double lng, String sourceId, LocationProvider provider) {
+    DetailedLocation(double lat, double lng, String sourceId, LocationProvider provider, AdvertisingInfo info) {
         this.location = new OpenLocateLocation(lat, lng);
-        this.sourceId    = sourceId;
+        this.sourceId = sourceId;
         this.provider = provider;
+        this.advertisingInfo = info;
     }
 
-    SourceLocation(Location location, String sourceId, LocationProvider provider) {
+    DetailedLocation(Location location, String sourceId, LocationProvider provider, AdvertisingInfo info) {
         this.location = new OpenLocateLocation(location);
         this.sourceId = sourceId;
         this.provider = provider;
+        this.advertisingInfo = info;
     }
 
-    SourceLocation(String jsonString) {
+    DetailedLocation(String jsonString) {
         try {
             JSONObject json = new JSONObject(jsonString);
 
             provider = LocationProvider.GPS;
             sourceId = json.getString(SOURCE_ID_KEY);
             location = new OpenLocateLocation(json.getString(LOCATION_KEY));
+            advertisingInfo = new AdvertisingInfo(
+                    json.getString(ADVERTISING_ID_KEY),
+                    json.getBoolean(LIMITED_AD_TRACKING_ENABLED_KEY)
+            );
         } catch (JSONException exception) {
             exception.printStackTrace();
         }
@@ -67,7 +79,10 @@ final class SourceLocation implements JsonObjectType, DatabaseJson {
         try {
             jsonObject
                     .put(SOURCE_ID_KEY, sourceId)
-                    .put(PROVIDER_KEY, provider.toString());
+                    .put(PROVIDER_KEY, provider.toString())
+                    .put(ADVERTISING_ID_KEY, advertisingInfo.getAdvertisingId())
+                    .put(LIMITED_AD_TRACKING_ENABLED_KEY, advertisingInfo.isLimitedAdTrackingEnabled())
+                    .put(ADVERTISING_ID_TYPE_KEY, ADVERTISING_ID_TYPE);
         } catch (NullPointerException | JSONException e) {
             e.printStackTrace();
         }
@@ -83,6 +98,8 @@ final class SourceLocation implements JsonObjectType, DatabaseJson {
             jsonObject.put(LOCATION_KEY, location.getJson());
             jsonObject.put(SOURCE_ID_KEY, sourceId);
             jsonObject.put(PROVIDER_KEY, provider.toString());
+            jsonObject.put(ADVERTISING_ID_KEY, advertisingInfo.getAdvertisingId());
+            jsonObject.put(LIMITED_AD_TRACKING_ENABLED_KEY, advertisingInfo.isLimitedAdTrackingEnabled());
         } catch (JSONException e) {
             e.printStackTrace();
         }

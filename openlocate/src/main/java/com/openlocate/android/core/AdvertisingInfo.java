@@ -21,35 +21,21 @@
  */
 package com.openlocate.android.core;
 
-import org.junit.Test;
+final class AdvertisingInfo {
 
-import java.util.Date;
+    private String advertisingId;
+    private boolean isLimitedAdTrackingEnabled;
 
-import static org.junit.Assert.assertEquals;
-
-public class DateUtilsTests {
-
-    @Test
-    public void testIso8601FormatFromDate() {
-        // Given
-        Date date = new Date(0);
-
-        // When
-        String iso8601Format = DateUtils.getIso8601Format(date);
-
-        // Then
-        assertEquals("1970-01-01T00:00:00.000Z", iso8601Format);
+    String getAdvertisingId() {
+        return advertisingId;
     }
 
-    @Test
-    public void testDateFromIso8601Format() {
-        // Given
-        String iso8601Format = "1970-01-01T00:00:00.000Z";
+    boolean isLimitedAdTrackingEnabled() {
+        return isLimitedAdTrackingEnabled;
+    }
 
-        // When
-        Date date = DateUtils.getDate(iso8601Format);
-
-        // Then
-        assertEquals(new Date(0), date);
+    AdvertisingInfo(String advertisingId, boolean isLimitedAdTrackingEnabled) {
+        this.advertisingId = advertisingId;
+        this.isLimitedAdTrackingEnabled = isLimitedAdTrackingEnabled;
     }
 }
