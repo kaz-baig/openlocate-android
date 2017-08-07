@@ -31,15 +31,15 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 
 import java.io.IOException;
 
-final class AdvertisingInfoTask extends AsyncTask<Void, Void, Void> {
+final class FetchAdvertisingInfoTask extends AsyncTask<Void, Void, Void> {
 
     private Context context;
-    private AdvertisingInfoTaskCallback callback;
+    private FetchAdvertisingInfoTaskCallback callback;
     private Logger logger;
 
     private AdvertisingIdClient.Info info;
 
-    AdvertisingInfoTask(Context context, AdvertisingInfoTaskCallback callback) {
+    FetchAdvertisingInfoTask(Context context, FetchAdvertisingInfoTaskCallback callback) {
         this.context = context;
         this.callback = callback;
         this.logger = getLogger(context);
@@ -47,7 +47,6 @@ final class AdvertisingInfoTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-
         try {
             info = AdvertisingIdClient.getAdvertisingIdInfo(context);
         } catch (IOException
@@ -63,7 +62,7 @@ final class AdvertisingInfoTask extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         if (callback != null) {
-            callback.onAdvertisingInfoTaskExecute(info.getId(), info.isLimitAdTrackingEnabled());
+            callback.onAdvertisingInfoTaskExecute(info);
         }
     }
 

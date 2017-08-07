@@ -21,6 +21,8 @@
  */
 package com.openlocate.android.core;
 
-interface AdvertisingInfoTaskCallback {
-    void onAdvertisingInfoTaskExecute(String advertisingId, boolean isLimitedAdTrackingEnabled);
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+
+interface FetchAdvertisingInfoTaskCallback {
+    void onAdvertisingInfoTaskExecute(AdvertisingIdClient.Info advertisingInfo);
 }

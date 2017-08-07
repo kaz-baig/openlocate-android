@@ -24,6 +24,7 @@ package com.openlocate.android.core;
 import android.content.Context;
 import android.content.Intent;
 
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.openlocate.android.R;
 import com.openlocate.android.config.Configuration;
 import com.openlocate.android.exceptions.IllegalConfigurationException;
@@ -81,21 +82,24 @@ public class OpenLocate implements OpenLocateLocationTracker {
             return;
         }
 
-        AdvertisingInfoTask task = new AdvertisingInfoTask(context, new AdvertisingInfoTaskCallback() {
+        FetchAdvertisingInfoTask task = new FetchAdvertisingInfoTask(context, new FetchAdvertisingInfoTaskCallback() {
             @Override
-            public void onAdvertisingInfoTaskExecute(String advertisingId, boolean isLimitedAdTrackingEnabled) {
-                onFetchAdvertisingInfo(advertisingId, isLimitedAdTrackingEnabled);
+            public void onAdvertisingInfoTaskExecute(AdvertisingIdClient.Info info) {
+                onFetchAdvertisingInfo(info);
             }
         });
         task.execute();
     }
 
-    private void onFetchAdvertisingInfo(String advertisingId, boolean isLimitedAdTrackingEnabled) {
+    private void onFetchAdvertisingInfo(AdvertisingIdClient.Info info) {
         Intent intent = new Intent(context, LocationService.class);
 
         updateSourceId(intent);
         updateConfiguration(intent);
-        updateAdvertisingInfo(intent, advertisingId, isLimitedAdTrackingEnabled);
+
+        if (info != null) {
+            updateAdvertisingInfo(intent, info.getId(), info.isLimitAdTrackingEnabled());
+        }
 
         context.startService(intent);
     }
