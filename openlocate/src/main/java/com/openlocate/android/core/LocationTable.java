@@ -65,17 +65,17 @@ final class LocationTable {
         createIfRequired(db);
     }
 
-    static void add(SQLiteDatabase database, DetailedLocation location) {
+    static void add(SQLiteDatabase database, OpenLocateLocation location) {
         if (database == null || location == null) {
             return;
         }
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_LOCATION, location.getDatabaseJsonString());
+        values.put(COLUMN_LOCATION, location.getJson().toString());
         database.insert(TABLE_NAME, null, values);
     }
 
-    static void addAll(SQLiteDatabase database, List<DetailedLocation> locations) {
+    static void addAll(SQLiteDatabase database, List<OpenLocateLocation> locations) {
         if (database == null || locations == null || locations.isEmpty()) {
             return;
         }
@@ -83,9 +83,9 @@ final class LocationTable {
         SQLiteStatement statement = database.compileStatement(BULK_INSERT_LOCATION);
 
         database.beginTransaction();
-        for (DetailedLocation location : locations) {
+        for (OpenLocateLocation location : locations) {
             statement.clearBindings();
-            statement.bindString(COLUMN_LOCATION_INDEX, location.getDatabaseJsonString());
+            statement.bindString(COLUMN_LOCATION_INDEX, location.getJson().toString());
             statement.execute();
         }
 
@@ -101,7 +101,7 @@ final class LocationTable {
         return DatabaseUtils.queryNumEntries(database, TABLE_NAME);
     }
 
-    static List<DetailedLocation> popAll(SQLiteDatabase database) {
+    static List<OpenLocateLocation> popAll(SQLiteDatabase database) {
         if (database == null) {
             return null;
         }
@@ -112,14 +112,14 @@ final class LocationTable {
             return null;
         }
 
-        List<DetailedLocation> locations = getLocations(cursor);
+        List<OpenLocateLocation> locations = getLocations(cursor);
         database.delete(TABLE_NAME, null, null);
 
         return locations;
     }
 
-    private static List<DetailedLocation> getLocations(Cursor cursor) {
-        List<DetailedLocation> locations = null;
+    private static List<OpenLocateLocation> getLocations(Cursor cursor) {
+        List<OpenLocateLocation> locations = null;
 
         if (cursor.moveToFirst()) {
             locations = new ArrayList<>();
@@ -128,7 +128,7 @@ final class LocationTable {
                     break;
                 }
 
-                DetailedLocation location = new DetailedLocation(cursor.getString(COLUMN_LOCATION_INDEX));
+                OpenLocateLocation location = new OpenLocateLocation(cursor.getString(COLUMN_LOCATION_INDEX));
                 locations.add(location);
             } while (cursor.moveToNext());
         }

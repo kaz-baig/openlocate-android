@@ -31,9 +31,11 @@ interface OpenLocateLocationTracker {
 
     void stopTracking();
 
-    String getSourceId();
+    String getProviderSourceId();
+    String getProviderId();
 
-    void setSourceId(String sourceId);
+    void setProviderSourceId(String sourceId);
+    void setProviderId(String providerId);
 
     void configure(Configuration configuration) throws IllegalConfigurationException;
 

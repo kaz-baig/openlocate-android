@@ -21,18 +21,63 @@
  */
 package com.openlocate.android.core;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 public class OpenLocateLocationTests {
+    private double lat = 10.40;
+    private double lng = 10.234;
+    private String accuracy = "40.43";
+    private boolean adOptOut = true;
+    private String adId = "1234";
+    private long timestamp = 341;
+    private String providerSourceId = "2345";
+
+    private JSONObject getJson() {
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            jsonObject.put(OpenLocateLocation.Keys.LATITUDE, lat);
+            jsonObject.put(OpenLocateLocation.Keys.LONGITUDE, lng);
+            jsonObject.put(OpenLocateLocation.Keys.AD_OPT_OUT, adOptOut);
+            jsonObject.put(OpenLocateLocation.Keys.AD_ID, adId);
+            jsonObject.put(OpenLocateLocation.Keys.HORIZONTAL_ACCURACY, accuracy);
+            jsonObject.put(OpenLocateLocation.Keys.TIMESTAMP, timestamp);
+            jsonObject.put(OpenLocateLocation.Keys.PROVIDER_SOURCE_ID, providerSourceId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return jsonObject;
+    }
 
     @Test
-    public void testOpenLocateLocationConstructor() {
+    public void testOpenTableJsonConstructor() {
         // Given
-        OpenLocateLocation location = new OpenLocateLocation(123.23, 123.32);
+        JSONObject jsonObject = getJson();
+
+        // When
+        OpenLocateLocation location = new OpenLocateLocation(jsonObject.toString());
+        JSONObject json = location.getJson();
 
         // Then
         assertNotNull(location);
+        try {
+            assertEquals(json.getDouble(OpenLocateLocation.Keys.LATITUDE), lat, 0.0d);
+            assertEquals(json.getDouble(OpenLocateLocation.Keys.LONGITUDE), lng, 0.0d);
+            assertEquals(json.getString(OpenLocateLocation.Keys.HORIZONTAL_ACCURACY), accuracy);
+            assertEquals(json.getLong(OpenLocateLocation.Keys.TIMESTAMP), timestamp);
+            assertEquals(json.getString(OpenLocateLocation.Keys.PROVIDER_SOURCE_ID), providerSourceId);
+            assertEquals(json.getBoolean(OpenLocateLocation.Keys.AD_OPT_OUT), adOptOut);
+            assertEquals(json.getString(OpenLocateLocation.Keys.AD_ID), adId);
+            assertEquals(json.getLong(OpenLocateLocation.Keys.TIMESTAMP), timestamp);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -22,7 +22,9 @@
 package com.openlocate.android.core;
 
 final class Constants {
-    static final String SOURCE_ID_KEY = "source_id";
+    static final String PROVIDER_SOURCE_ID_KEY = "provider_source_id";
+    static final String PROVIDER_KEY = "provider_id";
+
     static final String BASE_URL_KEY = "base_url";
     static final String HOST_KEY = "host";
     static final String PORT_KEY = "port";

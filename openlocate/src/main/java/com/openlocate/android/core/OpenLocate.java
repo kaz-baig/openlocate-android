@@ -38,7 +38,9 @@ public class OpenLocate implements OpenLocateLocationTracker {
 
     private static String TAG = OpenLocate.class.getSimpleName();
 
-    private String sourceId;
+    private String providerSourceId;
+    private String providerId;
+
     private Context context;
     private Configuration configuration;
     private Logger logger;
@@ -111,7 +113,8 @@ public class OpenLocate implements OpenLocateLocationTracker {
     }
 
     private void updateSourceId(Intent intent) {
-        intent.putExtra(Constants.SOURCE_ID_KEY, sourceId);
+        intent.putExtra(Constants.PROVIDER_SOURCE_ID_KEY, providerSourceId);
+        intent.putExtra(Constants.PROVIDER_KEY, providerId);
     }
 
     private void updateAdvertisingInfo(Intent intent, String advertisingId, boolean isLimitedAdTrackingEnabled) {
@@ -120,7 +123,8 @@ public class OpenLocate implements OpenLocateLocationTracker {
     }
 
     private boolean hasTrackingCapabilities() throws InvalidSourceException, LocationServiceConflictException, IllegalConfigurationException {
-        validateSourceId();
+        validateProviderSourceId();
+        validateProviderId();
         validateLocationService();
         validateConfiguration();
         validateLocationPermission();
@@ -128,8 +132,17 @@ public class OpenLocate implements OpenLocateLocationTracker {
         return true;
     }
 
-    private void validateSourceId() throws InvalidSourceException {
-        if (sourceId == null || sourceId.isEmpty()) {
+    private void validateProviderSourceId() throws InvalidSourceException {
+        if (providerSourceId == null || providerSourceId.isEmpty()) {
+            logger.e(context.getString(R.string.invalid_source_message));
+            throw new InvalidSourceException(
+                    context.getString(R.string.invalid_source_message)
+            );
+        }
+    }
+
+    private void validateProviderId() throws InvalidSourceException {
+        if (providerId == null || providerId.isEmpty()) {
             logger.e(context.getString(R.string.invalid_source_message));
             throw new InvalidSourceException(
                     context.getString(R.string.invalid_source_message)
@@ -180,13 +193,23 @@ public class OpenLocate implements OpenLocateLocationTracker {
     }
 
     @Override
-    public String getSourceId() {
-        return sourceId;
+    public String getProviderSourceId() {
+        return providerSourceId;
     }
 
     @Override
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
+    public void setProviderSourceId(String providerSourceId) {
+        this.providerSourceId = providerSourceId;
+    }
+
+    @Override
+    public String getProviderId() {
+        return providerId;
+    }
+
+    @Override
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 
     @Override

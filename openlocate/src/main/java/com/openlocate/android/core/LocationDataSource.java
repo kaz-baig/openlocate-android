@@ -24,11 +24,11 @@ package com.openlocate.android.core;
 import java.util.List;
 
 interface LocationDataSource {
-    void addAll(List<DetailedLocation> locationList);
+    void addAll(List<OpenLocateLocation> locationList);
 
-    void add(DetailedLocation location);
+    void add(OpenLocateLocation location);
 
-    List<DetailedLocation> popAll();
+    List<OpenLocateLocation> popAll();
 
     long size();
 }

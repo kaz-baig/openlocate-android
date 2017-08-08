@@ -24,7 +24,7 @@ package com.openlocate.android.core;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-final class OpenLocateLog implements LogType {
+final class OpenLocateLog implements LogType, JsonObjectType {
 
     private static final String MESSAGE_KEY = "message";
     private static final String LOG_LEVEL_KEY = "log_level";
@@ -84,7 +84,7 @@ final class OpenLocateLog implements LogType {
     }
 
     @Override
-    public String getDatabaseJsonString() {
+    public JSONObject getJson() {
         JSONObject jsonObject = new JSONObject();
 
         try {
@@ -94,6 +94,6 @@ final class OpenLocateLog implements LogType {
             e.printStackTrace();
         }
 
-        return jsonObject.toString();
+        return jsonObject;
     }
 }

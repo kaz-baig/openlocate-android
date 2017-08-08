@@ -21,7 +21,7 @@
  */
 package com.openlocate.android.core;
 
-interface LogType extends DatabaseJson {
+interface LogType extends JsonObjectType {
     LogLevel getLogLevel();
     String getMessage();
 }

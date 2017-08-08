@@ -65,7 +65,8 @@ public class LocationService extends Service {
     private LocationListener locationListener;
     private Logger logger;
 
-    private String sourceId;
+    private String providerSourceId;
+    private String providerId;
     private AdvertisingInfo advertisingInfo;
 
     private String baseUrl;
@@ -110,7 +111,9 @@ public class LocationService extends Service {
     }
 
     private void setValues(Intent intent) {
-        sourceId = intent.getStringExtra(Constants.SOURCE_ID_KEY);
+        providerSourceId = intent.getStringExtra(Constants.PROVIDER_SOURCE_ID_KEY);
+        providerId = intent.getStringExtra(Constants.PROVIDER_KEY);
+
         baseUrl = intent.getStringExtra(Constants.BASE_URL_KEY);
         tcpHost = intent.getStringExtra(Constants.HOST_KEY);
         tcpPort = intent.getIntExtra(Constants.PORT_KEY, Constants.DEFAULT_PORT);
@@ -173,6 +176,7 @@ public class LocationService extends Service {
     private void scheduleDispatchLocationService() {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.BASE_URL_KEY, baseUrl);
+        bundle.putString(Constants.PROVIDER_KEY, providerId);
 
         PeriodicTask task = new PeriodicTask.Builder()
                 .setExtras(bundle)
@@ -246,7 +250,7 @@ public class LocationService extends Service {
         public void onLocationChanged(Location location) {
             logger.v(location.toString());
             // TODO: @ulhas remove this hardcoded gps
-            locations.add(new DetailedLocation(location, sourceId, LocationProvider.GPS, advertisingInfo));
+            locations.add(new OpenLocateLocation(location, providerSourceId, advertisingInfo));
             logger.v("COUNT - " + locations.size());
         }
     }

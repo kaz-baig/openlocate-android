@@ -96,7 +96,8 @@ public class MainActivity extends AppCompatActivity {
         try {
             OpenLocate openLocate = OpenLocate.getInstance(getApplicationContext());
 
-            openLocate.setSourceId(sourceId);
+            openLocate.setProviderId(sourceId);
+            openLocate.setProviderSourceId(sourceId);
             openLocate.startTracking();
             Toast.makeText(this, "Location service started", Toast.LENGTH_LONG).show();
             onStartService();

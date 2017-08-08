@@ -27,73 +27,121 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 final class OpenLocateLocation implements JsonObjectType {
-    private static final String LATITUDE_KEY = "latitude";
-    private static final String LONGITUDE_KEY = "longitude";
-    private static final String ACCURACY_KEY = "accuracy";
-    private static final String SPEED_KEY = "speed";
-    private static final String BEARING_KEY = "bearing";
-    private static final String RECORDED_AT_KEY = "recorded_at";
-    private static final String ALTITUDE_KEY = "altitude";
 
-    private double latitude;
-    private double longitude;
-    private float accuracy;
-    private float speed;
-    private float bearing;
-    private long recordedAt;
-    private double altitude;
-
-    // For testing
-    OpenLocateLocation(double lat, double lng) {
-        latitude = lat;
-        longitude = lng;
+    class Keys {
+        static final String LATITUDE = "latitude";
+        static final String LONGITUDE = "longitude";
+        static final String HORIZONTAL_ACCURACY = "horizontal_accuracy";
+        static final String TIMESTAMP = "utc_timestamp";
+        static final String AD_ID = "ad_id";
+        static final String AD_OPT_OUT = "ad_opt_out";
+        static final String AD_TYPE = "id_type";
+        static final String PROVIDER_SOURCE_ID = "provider_source_id";
     }
 
-    OpenLocateLocation(Location location) {
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        accuracy = location.getAccuracy();
-        speed = location.getSpeed();
-        bearing = location.getBearing();
-        recordedAt = location.getTime();
-        altitude = location.getAltitude();
+    private static final String ADVERTISING_ID_TYPE = "aaid";
+    private static final String PROVIDER = "OpenLocate";
+
+    private TempLocation location;
+    private String providerSourceId;
+    private AdvertisingInfo advertisingInfo;
+
+    OpenLocateLocation(Location location, String providerSourceId, AdvertisingInfo info) {
+        this.location = new TempLocation(location);
+        this.providerSourceId = providerSourceId;
+        this.advertisingInfo = info;
     }
 
     OpenLocateLocation(String jsonString) {
         try {
-            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONObject json = new JSONObject(jsonString);
 
-            latitude = jsonObject.getDouble(LATITUDE_KEY);
-            longitude = jsonObject.getDouble(LONGITUDE_KEY);
-            accuracy = Float.valueOf(jsonObject.getString(ACCURACY_KEY));
-            speed = Float.valueOf(jsonObject.getString(SPEED_KEY));
-            bearing = Float.valueOf(jsonObject.getString(BEARING_KEY));
-            altitude = jsonObject.getDouble(ALTITUDE_KEY);
-            recordedAt = jsonObject.getLong(RECORDED_AT_KEY);
+            location = new TempLocation();
+            location.setLatitude(json.getDouble(Keys.LATITUDE));
+            location.setLongitude(json.getDouble(Keys.LONGITUDE));
+            location.setHorizontalAccuracy(Float.parseFloat(json.getString(Keys.HORIZONTAL_ACCURACY)));
+            location.setTimeStamp(json.getLong(Keys.TIMESTAMP));
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+            advertisingInfo = new AdvertisingInfo(
+                    json.getString(Keys.AD_ID),
+                    json.getBoolean(Keys.AD_OPT_OUT)
+            );
+
+            providerSourceId = json.getString(Keys.PROVIDER_SOURCE_ID);
+        } catch (JSONException exception) {
+            exception.printStackTrace();
         }
     }
 
     @Override
     public JSONObject getJson() {
-        JSONObject jsonObject;
+        JSONObject jsonObject = new JSONObject();
 
         try {
-            jsonObject = new JSONObject()
-                    .put(LATITUDE_KEY, latitude)
-                    .put(LONGITUDE_KEY, longitude)
-                    .put(ACCURACY_KEY, accuracy)
-                    .put(SPEED_KEY, speed)
-                    .put(BEARING_KEY, bearing)
-                    .put(RECORDED_AT_KEY, recordedAt)
-                    .put(ALTITUDE_KEY, altitude);
-        } catch (JSONException exception) {
-            jsonObject = null;
+            jsonObject
+                    .put(Keys.LATITUDE, location.getLatitude())
+                    .put(Keys.LONGITUDE, location.getLongitude())
+                    .put(Keys.HORIZONTAL_ACCURACY, String.valueOf(location.getHorizontalAccuracy()))
+                    .put(Keys.TIMESTAMP, location.getTimeStamp())
+                    .put(Keys.AD_ID, advertisingInfo.getAdvertisingId())
+                    .put(Keys.AD_OPT_OUT, advertisingInfo.isLimitedAdTrackingEnabled())
+                    .put(Keys.AD_TYPE, ADVERTISING_ID_TYPE)
+                    .put(Keys.PROVIDER_SOURCE_ID, providerSourceId);
+        } catch (NullPointerException | JSONException e) {
+            e.printStackTrace();
         }
 
         return jsonObject;
     }
 
+    private class TempLocation {
+
+        private double latitude;
+        private double longitude;
+        private float horizontalAccuracy;
+        private long timeStamp;
+
+        TempLocation() {
+
+        }
+
+        TempLocation(Location location) {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+            horizontalAccuracy = location.getAccuracy();
+            timeStamp = location.getTime();
+        }
+
+        double getLatitude() {
+            return latitude;
+        }
+
+        void setLatitude(double latitude) {
+            this.latitude = latitude;
+        }
+
+        double getLongitude() {
+            return longitude;
+        }
+
+        void setLongitude(double longitude) {
+            this.longitude = longitude;
+        }
+
+        float getHorizontalAccuracy() {
+            return horizontalAccuracy;
+        }
+
+        void setHorizontalAccuracy(float horizontalAccuracy) {
+            this.horizontalAccuracy = horizontalAccuracy;
+        }
+
+        long getTimeStamp() {
+            return timeStamp;
+        }
+
+        void setTimeStamp(long timeStamp) {
+            this.timeStamp = timeStamp;
+        }
+    }
 }

@@ -47,22 +47,23 @@ final public class DispatchLocationService extends GcmTaskService {
         logger = new DatabaseLogger(loggerDataSource, LogLevel.INFO);
 
         String baseUrl = taskParams.getExtras().getString(Constants.BASE_URL_KEY);
+        String providerId = taskParams.getExtras().getString(Constants.PROVIDER_KEY);
         HttpClient httpClient = new HttpClientImpl(baseUrl);
 
-        postLocations(httpClient, dataSource);
+        postLocations(httpClient, providerId, dataSource);
 
         return GcmNetworkManager.RESULT_SUCCESS;
     }
 
-    private void postLocations(HttpClient httpClient, final LocationDataSource dataSource) {
-        final List<DetailedLocation> locations = dataSource.popAll();
+    private void postLocations(HttpClient httpClient, String providerId, final LocationDataSource dataSource) {
+        final List<OpenLocateLocation> locations = dataSource.popAll();
 
         if (locations == null || locations.isEmpty()) {
             return;
         }
 
         httpClient.post(
-                "/api/v1/locations/collect/",
+                "/provider/" + providerId + "/devicelocation",
                 getLocationsJsonArray(locations).toString(),
                 new HttpClientCallback() {
                     @Override
@@ -79,10 +80,10 @@ final public class DispatchLocationService extends GcmTaskService {
         );
     }
 
-    private JSONArray getLocationsJsonArray(List<DetailedLocation> locationsToPost) {
+    private JSONArray getLocationsJsonArray(List<OpenLocateLocation> locationsToPost) {
         JSONArray jsonArray = new JSONArray();
 
-        for (DetailedLocation location : locationsToPost) {
+        for (OpenLocateLocation location : locationsToPost) {
             jsonArray.put(location.getJson());
         }
 

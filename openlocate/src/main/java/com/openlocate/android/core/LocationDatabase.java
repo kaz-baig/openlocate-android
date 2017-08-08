@@ -34,17 +34,17 @@ final class LocationDatabase implements LocationDataSource {
     }
 
     @Override
-    public void addAll(List<DetailedLocation> locations) {
+    public void addAll(List<OpenLocateLocation> locations) {
         LocationTable.addAll(helper.getWritableDatabase(), locations);
     }
 
     @Override
-    public void add(DetailedLocation location) {
+    public void add(OpenLocateLocation location) {
         LocationTable.add(helper.getWritableDatabase(), location);
     }
 
     @Override
-    public List<DetailedLocation> popAll() {
+    public List<OpenLocateLocation> popAll() {
         return LocationTable.popAll(helper.getWritableDatabase());
     }
 

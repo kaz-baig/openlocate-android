@@ -24,6 +24,8 @@ package com.openlocate.android.core;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,20 +46,36 @@ public class LocationDataSourceTests {
         dataSource.popAll();
     }
 
-    private DetailedLocation getDetailedLocation() {
-        return new DetailedLocation(
-                123.12,
-                32.234,
-                "",
-                LocationProvider.GPS,
-                new AdvertisingInfo("", true)
-        );
+    private JSONObject getJson() {
+        double lat = 10.403;
+        double lng = 10.234;
+        String accuracy = "40.43";
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            jsonObject.put(OpenLocateLocation.Keys.LATITUDE, lat);
+            jsonObject.put(OpenLocateLocation.Keys.LONGITUDE, lng);
+            jsonObject.put(OpenLocateLocation.Keys.AD_OPT_OUT, true);
+            jsonObject.put(OpenLocateLocation.Keys.AD_ID, "1234");
+            jsonObject.put(OpenLocateLocation.Keys.HORIZONTAL_ACCURACY, accuracy);
+            jsonObject.put(OpenLocateLocation.Keys.TIMESTAMP, 1234);
+            jsonObject.put(OpenLocateLocation.Keys.PROVIDER_SOURCE_ID, "2345");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return jsonObject;
+    }
+
+    private OpenLocateLocation getOpenLocateLocation() {
+        return new OpenLocateLocation(getJson().toString());
     }
 
     @Test
     public void testAddLocation() {
         // Given
-        DetailedLocation location = getDetailedLocation();
+        OpenLocateLocation location = getOpenLocateLocation();
 
         // When
         dataSource.add(location);
@@ -69,11 +87,11 @@ public class LocationDataSourceTests {
     @Test
     public void testLocationPopSize() {
         // Given
-        DetailedLocation location = getDetailedLocation();
+        OpenLocateLocation location = getOpenLocateLocation();
         dataSource.add(location);
 
         // When
-        List<DetailedLocation> locations = dataSource.popAll();
+        List<OpenLocateLocation> locations = dataSource.popAll();
 
         // Then
         assertEquals(1, locations.size());
@@ -83,9 +101,9 @@ public class LocationDataSourceTests {
     @Test
     public void testLocationAddAll() {
         // Given
-        List<DetailedLocation> locations = new ArrayList<>();
-        locations.add(getDetailedLocation());
-        locations.add(getDetailedLocation());
+        List<OpenLocateLocation> locations = new ArrayList<>();
+        locations.add(getOpenLocateLocation());
+        locations.add(getOpenLocateLocation());
 
         // When
         dataSource.addAll(locations);

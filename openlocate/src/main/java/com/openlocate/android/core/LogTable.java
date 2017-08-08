@@ -66,7 +66,7 @@ final class LogTable {
         }
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_LOG, log.getDatabaseJsonString());
+        values.put(COLUMN_LOG, log.getJson().toString());
         database.insert(TABLE_NAME, null, values);
     }
 
