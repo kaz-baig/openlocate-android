@@ -21,41 +21,43 @@
  */
 package com.openlocate.android.core;
 
-import android.content.Context;
-import android.location.LocationManager;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
-enum LocationProvider {
-    GPS("gps"),
-    NETWORK("network"),
-    PASSIVE("passive"),
-    DISABLED("disabled");
+final class UserInfo {
+    private String email;
+    private byte[] emailSha256;
+    private String userId3p;
+    private String providerSourceId;
 
-    private final String value;
-
-    LocationProvider(final String value) {
-        this.value = value;
+    String getEmail() {
+        return email;
     }
 
-    @Override
-    public String toString() {
-        return value;
+    byte[] getEmailSha256() {
+        return emailSha256;
     }
 
-    static LocationProvider getLocationProvider(Context context) {
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+    String getUserId3p() {
+        return userId3p;
+    }
 
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            return GPS;
+    String getProviderSourceId() {
+        return providerSourceId;
+    }
+
+    UserInfo(String email, String userId3p, String providerSourceId) {
+        this.email = email;
+        this.userId3p = userId3p;
+        this.providerSourceId = providerSourceId;
+
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            messageDigest.update(email.getBytes("UTF-8"));
+            emailSha256 = messageDigest.digest();
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
-
-        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            return NETWORK;
-        }
-
-        if (locationManager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
-            return PASSIVE;
-        }
-
-        return DISABLED;
     }
 }

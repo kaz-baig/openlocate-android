@@ -26,7 +26,6 @@ import android.content.Intent;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.openlocate.android.R;
-import com.openlocate.android.config.Configuration;
 import com.openlocate.android.exceptions.IllegalConfigurationException;
 import com.openlocate.android.exceptions.InvalidSourceException;
 import com.openlocate.android.exceptions.LocationConfigurationException;
@@ -42,29 +41,10 @@ public class OpenLocate implements OpenLocateLocationTracker {
     private String providerId;
 
     private Context context;
-    private Configuration configuration;
     private Logger logger;
 
     private OpenLocate(Context context) {
         this.context = context;
-
-        SharedPreferencesManager manager = new SharedPreferencesManager(context);
-
-        String baseUrl = manager.getBaseUrl();
-        String tcpHost = manager.getTcpHost();
-        int tcpPort = manager.getTcpPort();
-
-        this.configuration = new Configuration.Builder()
-                .setBaseUrl(baseUrl)
-                .setTcpHost(tcpHost)
-                .setTcpPort(tcpPort)
-                .build();
-
-        if (configuration.isTcpConfigured()) {
-            setupRemoteLogger();
-        } else {
-            setupConsoleLogger();
-        }
     }
 
     public static OpenLocate getInstance(Context context) {
@@ -97,19 +77,12 @@ public class OpenLocate implements OpenLocateLocationTracker {
         Intent intent = new Intent(context, LocationService.class);
 
         updateSourceId(intent);
-        updateConfiguration(intent);
 
         if (info != null) {
             updateAdvertisingInfo(intent, info.getId(), info.isLimitAdTrackingEnabled());
         }
 
         context.startService(intent);
-    }
-
-    private void updateConfiguration(Intent intent) {
-        intent.putExtra(Constants.BASE_URL_KEY, configuration.getBaseUrl());
-        intent.putExtra(Constants.HOST_KEY, configuration.getTcpHost());
-        intent.putExtra(Constants.PORT_KEY, configuration.getTcpPort());
     }
 
     private void updateSourceId(Intent intent) {

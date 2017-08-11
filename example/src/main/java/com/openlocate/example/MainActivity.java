@@ -34,7 +34,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.openlocate.android.config.Configuration;
 import com.openlocate.android.core.OpenLocate;
 import com.openlocate.android.exceptions.IllegalConfigurationException;
 import com.openlocate.android.exceptions.InvalidSourceException;

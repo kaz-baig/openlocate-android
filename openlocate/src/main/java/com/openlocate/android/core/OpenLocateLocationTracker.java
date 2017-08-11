@@ -21,7 +21,6 @@
  */
 package com.openlocate.android.core;
 
-import com.openlocate.android.config.Configuration;
 import com.openlocate.android.exceptions.IllegalConfigurationException;
 import com.openlocate.android.exceptions.InvalidSourceException;
 import com.openlocate.android.exceptions.LocationServiceConflictException;

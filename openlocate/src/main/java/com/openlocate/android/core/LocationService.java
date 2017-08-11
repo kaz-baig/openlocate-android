@@ -65,9 +65,9 @@ public class LocationService extends Service {
     private LocationListener locationListener;
     private Logger logger;
 
-    private String providerSourceId;
     private String providerId;
     private AdvertisingInfo advertisingInfo;
+    private UserInfo userInfo;
 
     private String baseUrl;
     private String tcpHost;
@@ -111,7 +111,6 @@ public class LocationService extends Service {
     }
 
     private void setValues(Intent intent) {
-        providerSourceId = intent.getStringExtra(Constants.PROVIDER_SOURCE_ID_KEY);
         providerId = intent.getStringExtra(Constants.PROVIDER_KEY);
 
         baseUrl = intent.getStringExtra(Constants.BASE_URL_KEY);
@@ -121,6 +120,12 @@ public class LocationService extends Service {
         advertisingInfo = new AdvertisingInfo(
                 intent.getStringExtra(Constants.ADVERTISING_ID_KEY),
                 intent.getBooleanExtra(Constants.LIMITED_AD_TRACKING_ENABLED_KEY, false)
+        );
+
+        userInfo = new UserInfo(
+                intent.getStringExtra(Constants.EMAIL_ADDR),
+                intent.getStringExtra(Constants.USER_ID_3P),
+                intent.getStringExtra(Constants.PROVIDER_SOURCE_ID_KEY)
         );
     }
 
@@ -249,8 +254,16 @@ public class LocationService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             logger.v(location.toString());
-            // TODO: @ulhas remove this hardcoded gps
-            locations.add(new OpenLocateLocation(location, providerSourceId, advertisingInfo));
+            locations.add(
+                    new OpenLocateLocation(
+                            location,
+                            advertisingInfo,
+                            new DeviceInfo(getApplicationContext()),
+                            new NetworkInfo(getApplicationContext()),
+                            userInfo,
+                            LocationProvider.getLocationProvider(getApplicationContext())
+                    )
+            );
             logger.v("COUNT - " + locations.size());
         }
     }
