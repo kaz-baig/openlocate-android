@@ -57,6 +57,7 @@ final class LocationServiceHelper {
     private long locationRequestIntervalInSecs;
     private long transmissionIntervalInSecs;
     private LocationAccuracy accuracy;
+    private boolean requestLocationUpdates;
 
     private LocationDataSource locations;
     private LocationServiceHelper.LocationListener locationListener;
@@ -149,9 +150,14 @@ final class LocationServiceHelper {
                 intent.getBooleanExtra(Constants.LIMITED_AD_TRACKING_ENABLED_KEY, false)
         );
 
+        setRequestLocationUpdates(intent);
         setLocationRequestIntervalInSecs(intent);
         setTransmissionIntervalInSecs(intent);
         setLocationAccuracy(intent);
+    }
+
+    private void setRequestLocationUpdates(Intent intent) {
+        requestLocationUpdates = intent.getBooleanExtra(Constants.REQUEST_LOCATION_UPDATES, Constants.DEFAULT_REQUEST_LOCATION_UPDATES);
     }
 
     private void setLocationRequestIntervalInSecs(Intent intent) {
@@ -195,9 +201,12 @@ final class LocationServiceHelper {
 
     private void startLocationUpdates() {
         try {
-            LocationRequest request = getLocationRequest();
-            locationListener = new LocationListener();
-            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, request, locationListener);
+
+            if (requestLocationUpdates) {
+                LocationRequest request = getLocationRequest();
+                locationListener = new LocationListener();
+                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, request, locationListener);
+            }
             schedulePeriodicTasks();
         } catch (SecurityException e) {
             locationListener = null;
@@ -206,8 +215,11 @@ final class LocationServiceHelper {
     }
 
     private void stopLocationUpdates() {
-        if (googleApiClient != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, locationListener);
+
+        if (requestLocationUpdates) {
+            if (googleApiClient != null) {
+                LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, locationListener);
+            }
         }
         locationListener = null;
     }

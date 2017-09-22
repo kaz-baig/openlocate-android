@@ -108,8 +108,12 @@ public class TrackFragment extends Fragment {
                     .setUrl(BuildConfig.URL)
                     .setHeaders(getHeader())
                     .build();
+
+            boolean requestLocationUpdates = true;
+
             OpenLocate openLocate = OpenLocate.getInstance(activity);
-            openLocate.startTracking(configuration);
+            openLocate.init(configuration);
+            openLocate.startTracking(configuration, requestLocationUpdates);
             Toast.makeText(activity, getString(R.string.sercive_started), Toast.LENGTH_LONG).show();
             onStartService();
         } catch (InvalidConfigurationException | LocationServiceConflictException | LocationConfigurationException e) {

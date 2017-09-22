@@ -51,7 +51,6 @@ public class OpenLocate implements OpenLocateLocationTracker {
     private long locationInterval = Constants.DEFAULT_LOCATION_INTERVAL;
     private long transmissionInterval = Constants.DEFAULT_TRANSMISSION_INTERVAL;
     private LocationAccuracy accuracy = Constants.DEFAULT_LOCATION_ACCURACY;
-
     private OpenLocate(Context context) {
         this.context = context;
     }
@@ -70,9 +69,9 @@ public class OpenLocate implements OpenLocateLocationTracker {
     }
 
     @Override
-    public void startTracking(final Configuration configuration) throws InvalidConfigurationException, LocationServiceConflictException, LocationConfigurationException, LocationPermissionException {
+    public void startTracking(final Configuration configuration, final boolean requestLocationUpdates) throws InvalidConfigurationException, LocationServiceConflictException, LocationConfigurationException, LocationPermissionException {
 
-        boolean startTracking = hasTrackingCapabilities(configuration);
+        boolean startTracking = hasTrackingCapabilities(configuration, requestLocationUpdates);
 
         if (!startTracking) {
             // TODO: do something here
@@ -82,7 +81,7 @@ public class OpenLocate implements OpenLocateLocationTracker {
         FetchAdvertisingInfoTask task = new FetchAdvertisingInfoTask(context, new FetchAdvertisingInfoTaskCallback() {
             @Override
             public void onAdvertisingInfoTaskExecute(AdvertisingIdClient.Info info) {
-                onFetchAdvertisingInfo(info, configuration);
+                onFetchAdvertisingInfo(info, configuration, requestLocationUpdates);
             }
         });
         task.execute();
@@ -133,12 +132,12 @@ public class OpenLocate implements OpenLocateLocationTracker {
         task.execute();
     }
 
-    private void onFetchAdvertisingInfo(AdvertisingIdClient.Info info, Configuration configuration) {
+    private void onFetchAdvertisingInfo(AdvertisingIdClient.Info info, Configuration configuration, boolean requestLocationUpdates) {
         Intent intent = new Intent(context, LocationService.class);
 
         intent.putExtra(Constants.URL_KEY, configuration.getUrl());
         intent.putExtra(Constants.HEADER_KEY, configuration.getHeaders());
-        updateLocationConfigurationInfo(intent);
+        updateLocationConfigurationInfo(intent, requestLocationUpdates);
 
         if (info != null) {
             updateAdvertisingInfo(intent, info.getId(), info.isLimitAdTrackingEnabled());
@@ -152,17 +151,20 @@ public class OpenLocate implements OpenLocateLocationTracker {
         intent.putExtra(Constants.LIMITED_AD_TRACKING_ENABLED_KEY, isLimitedAdTrackingEnabled);
     }
 
-    private void updateLocationConfigurationInfo(Intent intent) {
+    private void updateLocationConfigurationInfo(Intent intent, boolean requestLocationUpdates) {
         intent.putExtra(Constants.LOCATION_ACCURACY_KEY, accuracy);
         intent.putExtra(Constants.LOCATION_INTERVAL_KEY, locationInterval);
+        intent.putExtra(Constants.REQUEST_LOCATION_UPDATES, requestLocationUpdates);
         intent.putExtra(Constants.TRANSMISSION_INTERVAL_KEY, transmissionInterval);
     }
 
-    private boolean hasTrackingCapabilities(Configuration configuration) throws InvalidConfigurationException, IllegalStateException {
+    private boolean hasTrackingCapabilities(Configuration configuration, boolean requestLocationUpdates) throws InvalidConfigurationException, IllegalStateException {
         validateLocationService();
         validateConfiguration(configuration);
-        validateLocationPermission();
-        validateLocationEnabled();
+        if (requestLocationUpdates) {
+            validateLocationPermission();
+            validateLocationEnabled();
+        }
         return true;
     }
 

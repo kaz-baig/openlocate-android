@@ -33,7 +33,7 @@ interface OpenLocateLocationTracker {
     void init(Configuration configuration)
             throws InvalidConfigurationException;
 
-    void startTracking(Configuration configurationrefac)
+    void startTracking(Configuration configuration, boolean requestLocationUpdates)
             throws InvalidConfigurationException,
             LocationServiceConflictException,
             LocationConfigurationException,
