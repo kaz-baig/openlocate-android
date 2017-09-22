@@ -25,6 +25,7 @@ package com.openlocate.example.fragments;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -57,6 +58,8 @@ public class TrackFragment extends Fragment {
     private Activity activity;
     private Button startButton;
     private Button stopButton;
+    private Button addButton;
+    private OpenLocate openLocate;
 
     public static TrackFragment getInstance() {
         return new TrackFragment();
@@ -88,11 +91,28 @@ public class TrackFragment extends Fragment {
             }
         });
 
+        addButton = (Button) view.findViewById(R.id.add_loc);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addLocation();
+            }
+        });
+
         OpenLocate openLocate = OpenLocate.getInstance(activity);
         if (openLocate.isTracking()) {
             onStartService();
         }
         return view;
+    }
+
+    private void addLocation() {
+        Location loc = new Location("");
+        loc.setLatitude(new Double(19));
+        loc.setLongitude(new Double(72));
+
+        openLocate.addLocation(loc);
+
     }
 
     @Override
@@ -109,11 +129,12 @@ public class TrackFragment extends Fragment {
                     .setHeaders(getHeader())
                     .build();
 
-            boolean requestLocationUpdates = true;
+            boolean requestLocationUpdates = false;
 
-            OpenLocate openLocate = OpenLocate.getInstance(activity);
+            openLocate = OpenLocate.getInstance(activity);
             openLocate.init(configuration);
             openLocate.startTracking(configuration, requestLocationUpdates);
+
             Toast.makeText(activity, getString(R.string.sercive_started), Toast.LENGTH_LONG).show();
             onStartService();
         } catch (InvalidConfigurationException | LocationServiceConflictException | LocationConfigurationException e) {

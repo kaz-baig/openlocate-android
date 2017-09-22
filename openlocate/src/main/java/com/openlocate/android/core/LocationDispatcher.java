@@ -55,7 +55,7 @@ final class LocationDispatcher {
                     @Override
                     public void onCompletion(HttpRequest request, HttpResponse response) {
                         dataSource.addAll(locations);
-                        Log.e(TAG, "Fail to post location");
+                        Log.e(TAG, "Fail to post location.");
                     }
                 }
         );

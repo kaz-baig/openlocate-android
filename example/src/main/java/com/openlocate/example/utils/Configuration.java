@@ -23,5 +23,5 @@ package com.openlocate.example.utils;
 
 public class Configuration {
     public static final String BASE_URL = "https://api.safegraph.com/";
-    public static final String AUTH_TOKEN = "Bearer <YOUR_TOKEN>";
+    public static final String AUTH_TOKEN = "Bearer dVUTI5nd8r0ZFVp9Fp7Dqm5bgOGGC0UL";
 }
