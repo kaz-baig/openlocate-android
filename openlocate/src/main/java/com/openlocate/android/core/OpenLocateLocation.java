@@ -23,6 +23,8 @@ package com.openlocate.android.core;
 
 import android.location.Location;
 
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,9 +45,9 @@ public final class OpenLocateLocation implements JsonObjectType {
     private static final String ADVERTISING_ID_TYPE = "aaid";
 
     private TempLocation location;
-    private AdvertisingInfo advertisingInfo;
+    private AdvertisingIdClient.Info advertisingInfo;
 
-    OpenLocateLocation(Location location, AdvertisingInfo info) {
+    OpenLocateLocation(Location location, AdvertisingIdClient.Info info) {
         this.location = new TempLocation(location);
         this.advertisingInfo = info;
     }
@@ -60,7 +62,7 @@ public final class OpenLocateLocation implements JsonObjectType {
             location.setHorizontalAccuracy(json.getDouble(Keys.HORIZONTAL_ACCURACY));
             location.setTimeStamp(json.getLong(Keys.TIMESTAMP));
 
-            advertisingInfo = new AdvertisingInfo(
+            advertisingInfo = new AdvertisingIdClient.Info(
                     json.getString(Keys.AD_ID),
                     json.getBoolean(Keys.AD_OPT_OUT)
             );
@@ -79,8 +81,8 @@ public final class OpenLocateLocation implements JsonObjectType {
                     .put(Keys.LONGITUDE, location.getLongitude())
                     .put(Keys.HORIZONTAL_ACCURACY, location.getHorizontalAccuracy())
                     .put(Keys.TIMESTAMP, location.getTimeStamp())
-                    .put(Keys.AD_ID, advertisingInfo.getAdvertisingId())
-                    .put(Keys.AD_OPT_OUT, advertisingInfo.isLimitedAdTrackingEnabled())
+                    .put(Keys.AD_ID, advertisingInfo.getId())
+                    .put(Keys.AD_OPT_OUT, advertisingInfo.isLimitAdTrackingEnabled())
                     .put(Keys.AD_TYPE, ADVERTISING_ID_TYPE);
         } catch (NullPointerException | JSONException e) {
             e.printStackTrace();
@@ -157,10 +159,10 @@ public final class OpenLocateLocation implements JsonObjectType {
     }
 
     public String getAdvertisingId() {
-        return this.advertisingInfo.getAdvertisingId();
+        return this.advertisingInfo.getId();
     }
 
     public boolean isLimitedAdTrackingEnabled() {
-        return this.advertisingInfo.isLimitedAdTrackingEnabled();
+        return this.advertisingInfo.isLimitAdTrackingEnabled();
     }
 }

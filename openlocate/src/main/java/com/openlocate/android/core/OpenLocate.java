@@ -23,6 +23,7 @@ package com.openlocate.android.core;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
@@ -40,6 +41,9 @@ import com.openlocate.android.exceptions.LocationConfigurationException;
 import com.openlocate.android.exceptions.LocationPermissionException;
 import com.openlocate.android.exceptions.LocationServiceConflictException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OpenLocate implements OpenLocateLocationTracker {
 
     private static OpenLocate sharedInstance = null;
@@ -51,6 +55,10 @@ public class OpenLocate implements OpenLocateLocationTracker {
     private long locationInterval = Constants.DEFAULT_LOCATION_INTERVAL;
     private long transmissionInterval = Constants.DEFAULT_TRANSMISSION_INTERVAL;
     private LocationAccuracy accuracy = Constants.DEFAULT_LOCATION_ACCURACY;
+    private LocationDatabase locations;
+    private AdvertisingIdClient.Info advertisingInfo;
+    private Configuration configuration;
+
     private OpenLocate(Context context) {
         this.context = context;
     }
@@ -118,14 +126,56 @@ public class OpenLocate implements OpenLocateLocationTracker {
         }
     }
 
+    private void initDatabase() {
+        SQLiteOpenHelper helper = new DatabaseHelper(context);
+        locations = new LocationDatabase(helper);
+    }
+
+    @Override
+    public void addLocation(Location location) {
+        //save single location
+
+        if (locations == null) {
+            initDatabase();
+        }
+
+        if(!ServiceUtils.isServiceRunning(LocationService.class, context)) {
+            startTracking(configuration, Constants.DEFAULT_REQUEST_LOCATION_UPDATES);
+        }
+
+        OpenLocateLocation openLocatelocation = new OpenLocateLocation(location, advertisingInfo);
+        locations.add(openLocatelocation);
+    }
+
+    @Override
+    public void addLocations(List<Location> locationList) {
+        //save list of locations
+
+        if (locations == null) {
+            initDatabase();
+        }
+
+        if(!ServiceUtils.isServiceRunning(LocationService.class, context)) {
+            startTracking(configuration, Constants.DEFAULT_REQUEST_LOCATION_UPDATES);
+        }
+
+        List<OpenLocateLocation> openLocateLocations = new ArrayList<>();
+
+        for (Location location: locationList) {
+            OpenLocateLocation openLocateLocation = new OpenLocateLocation(location, advertisingInfo);
+            openLocateLocations.add(openLocateLocation);
+        }
+
+        locations.addAll(openLocateLocations);
+
+    }
+
     private void onFetchCurrentLocation(final Location location, final OpenLocateLocationCallback callback) {
         FetchAdvertisingInfoTask task = new FetchAdvertisingInfoTask(context, new FetchAdvertisingInfoTaskCallback() {
             @Override
             public void onAdvertisingInfoTaskExecute(AdvertisingIdClient.Info info) {
                 callback.onLocationFetch(
-                        new OpenLocateLocation(
-                                location, new AdvertisingInfo(info)
-                        )
+                        new OpenLocateLocation(location, info)
                 );
             }
         });
@@ -140,6 +190,7 @@ public class OpenLocate implements OpenLocateLocationTracker {
         updateLocationConfigurationInfo(intent, requestLocationUpdates);
 
         if (info != null) {
+            advertisingInfo = info;
             updateAdvertisingInfo(intent, info.getId(), info.isLimitAdTrackingEnabled());
         }
 
@@ -176,6 +227,8 @@ public class OpenLocate implements OpenLocateLocationTracker {
             throw new InvalidConfigurationException(
                     message
             );
+        } else {
+            this.configuration = configuration;
         }
     }
 

@@ -27,7 +27,7 @@ final class Constants {
     static final long DEFAULT_LOCATION_INTERVAL = 120;
     static final long DEFAULT_TRANSMISSION_INTERVAL = 300;
     static final LocationAccuracy DEFAULT_LOCATION_ACCURACY = LocationAccuracy.HIGH;
-    static final boolean DEFAULT_REQUEST_LOCATION_UPDATES = true;
+    static final boolean DEFAULT_REQUEST_LOCATION_UPDATES = false;
     // Location service intent keys
     static final String URL_KEY = "url";
     static final String HEADER_KEY = "header";

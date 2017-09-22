@@ -21,6 +21,8 @@
  */
 package com.openlocate.android.core;
 
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -31,11 +33,11 @@ public class AdvertisingInfoTests {
     @Test
     public void testAdvertisingInfoConstructor() {
         // Given
-        AdvertisingInfo advertisingInfo = new AdvertisingInfo("1234", true);
+        AdvertisingIdClient.Info advertisingInfo = new AdvertisingIdClient.Info("1234", true);
 
         // When
-        String id = advertisingInfo.getAdvertisingId();
-        boolean isLimitedAdTracking = advertisingInfo.isLimitedAdTrackingEnabled();
+        String id = advertisingInfo.getId();
+        boolean isLimitedAdTracking = advertisingInfo.isLimitAdTrackingEnabled();
 
         // Then
         assertEquals("1234", id);
