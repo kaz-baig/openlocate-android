@@ -65,7 +65,13 @@ public class OpenLocate implements OpenLocateLocationTracker {
     }
 
     @Override
+    public void init(final Configuration configuration) throws InvalidConfigurationException {
+        validateConfiguration(configuration);
+    }
+
+    @Override
     public void startTracking(final Configuration configuration) throws InvalidConfigurationException, LocationServiceConflictException, LocationConfigurationException, LocationPermissionException {
+
         boolean startTracking = hasTrackingCapabilities(configuration);
 
         if (!startTracking) {

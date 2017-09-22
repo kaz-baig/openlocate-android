@@ -29,7 +29,11 @@ import com.openlocate.android.exceptions.LocationPermissionException;
 import com.openlocate.android.exceptions.LocationServiceConflictException;
 
 interface OpenLocateLocationTracker {
-    void startTracking(Configuration configuration)
+
+    void init(Configuration configuration)
+            throws InvalidConfigurationException;
+
+    void startTracking(Configuration configurationrefac)
             throws InvalidConfigurationException,
             LocationServiceConflictException,
             LocationConfigurationException,
