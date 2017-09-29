@@ -39,9 +39,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.openlocate.android.callbacks.OpenLocateLocationCallback;
 import com.openlocate.android.config.Configuration;
 import com.openlocate.android.exceptions.InvalidConfigurationException;
-import com.openlocate.android.exceptions.LocationConfigurationException;
+import com.openlocate.android.exceptions.LocationDisabledException;
 import com.openlocate.android.exceptions.LocationPermissionException;
-import com.openlocate.android.exceptions.LocationServiceConflictException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -55,8 +54,8 @@ public class OpenLocate implements OpenLocateLocationTracker {
     private Context context;
     private FusedLocationProviderClient fusedLocationProviderClient;
 
-    private long locationInterval = Constants.DEFAULT_LOCATION_INTERVAL;
-    private long transmissionInterval = Constants.DEFAULT_TRANSMISSION_INTERVAL;
+    private long locationInterval = Constants.DEFAULT_LOCATION_INTERVAL_SEC;
+    private long transmissionInterval = Constants.DEFAULT_TRANSMISSION_INTERVAL_SEC;
     private LocationAccuracy accuracy = Constants.DEFAULT_LOCATION_ACCURACY;
     private LocationDatabase locations;
     private AdvertisingIdClient.Info advertisingInfo;
@@ -69,7 +68,13 @@ public class OpenLocate implements OpenLocateLocationTracker {
             Log.i(TAG, "Service started");
             if (locationsTemp.size() > 0) {
                 for (Location location:locationsTemp) {
-                    addLocation(location);
+                    try {
+                        addLocation(location);
+                    } catch (LocationDisabledException e) {
+                        Log.d(TAG,e.getLocalizedMessage());
+                    } catch (LocationPermissionException e) {
+                        Log.d(TAG,e.getLocalizedMessage());
+                    }
                 }
             }
             locationsTemp.clear();
@@ -96,14 +101,8 @@ public class OpenLocate implements OpenLocateLocationTracker {
     }
 
     @Override
-    public void startTracking(final Configuration configuration, final boolean requestLocationUpdates) throws InvalidConfigurationException, LocationServiceConflictException, LocationConfigurationException, LocationPermissionException {
-
-        boolean startTracking = hasTrackingCapabilities(configuration, requestLocationUpdates);
-
-        if (!startTracking) {
-            // TODO: do something here
-            return;
-        }
+    public void startTracking(final Configuration configuration, final boolean requestLocationUpdates) throws InvalidConfigurationException, LocationDisabledException, LocationPermissionException {
+        validateTrackingCapabilities(configuration);
 
         FetchAdvertisingInfoTask task = new FetchAdvertisingInfoTask(context, new FetchAdvertisingInfoTaskCallback() {
             @Override
@@ -115,7 +114,7 @@ public class OpenLocate implements OpenLocateLocationTracker {
     }
 
     @Override
-    public void getCurrentLocation(final OpenLocateLocationCallback callback) throws LocationConfigurationException, LocationPermissionException {
+    public void getCurrentLocation(final OpenLocateLocationCallback callback) throws LocationDisabledException, LocationPermissionException {
         validateLocationPermission();
         validateLocationEnabled();
 
@@ -155,7 +154,7 @@ public class OpenLocate implements OpenLocateLocationTracker {
      * @param location
      */
     @Override
-    public void addLocation(Location location) {
+    public void addLocation(Location location) throws InvalidConfigurationException, LocationDisabledException, LocationPermissionException {
 
         if (locations == null) {
             initDatabase();
@@ -181,7 +180,7 @@ public class OpenLocate implements OpenLocateLocationTracker {
      * @param locationList
      */
     @Override
-    public void addLocations(List<Location> locationList) {
+    public void addLocations(List<Location> locationList) throws InvalidConfigurationException, LocationDisabledException, LocationPermissionException{
 
         if (locations == null) {
             initDatabase();
@@ -251,14 +250,11 @@ public class OpenLocate implements OpenLocateLocationTracker {
         intent.putExtra(Constants.TRANSMISSION_INTERVAL_KEY, transmissionInterval);
     }
 
-    private boolean hasTrackingCapabilities(Configuration configuration, boolean requestLocationUpdates) throws InvalidConfigurationException, IllegalStateException {
-        validateLocationService();
+    private void validateTrackingCapabilities(Configuration configuration) throws InvalidConfigurationException, LocationPermissionException, LocationDisabledException {
+        warnIfLocationServicesAreAlreadyRunning();
         validateConfiguration(configuration);
-        if (requestLocationUpdates) {
-            validateLocationPermission();
-            validateLocationEnabled();
-        }
-        return true;
+        validateLocationPermission();
+        validateLocationEnabled();
     }
 
     private void validateConfiguration(Configuration configuration) throws InvalidConfigurationException {
@@ -274,14 +270,10 @@ public class OpenLocate implements OpenLocateLocationTracker {
         }
     }
 
-    private void validateLocationService() throws LocationServiceConflictException {
+    private void warnIfLocationServicesAreAlreadyRunning() {
         if (ServiceUtils.isServiceRunning(LocationService.class, context)) {
             String message = "Location tracking is already active. Please stop the previous tracking before starting,";
-
-            Log.e(TAG, message);
-            throw new LocationServiceConflictException(
-                    message
-            );
+            Log.w(TAG, message);
         }
     }
 
@@ -296,12 +288,12 @@ public class OpenLocate implements OpenLocateLocationTracker {
         }
     }
 
-    private void validateLocationEnabled() throws LocationConfigurationException {
+    private void validateLocationEnabled() throws LocationDisabledException {
         if (!LocationService.isLocationEnabled(context)) {
             String message = "Location is switched off in the settings. Please enable it before continuing.";
 
             Log.e(TAG, message);
-            throw new LocationConfigurationException(
+            throw new LocationDisabledException(
                     message
             );
         }

@@ -21,7 +21,7 @@
  */
 package com.openlocate.android.exceptions;
 
-public class LocationPermissionException extends IllegalStateException {
+public class LocationPermissionException extends Exception {
     public LocationPermissionException(String message) {
         super(message);
     }

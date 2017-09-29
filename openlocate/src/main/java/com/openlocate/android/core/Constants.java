@@ -24,8 +24,9 @@ package com.openlocate.android.core;
 final class Constants {
 
     // Default Location constants
-    static final long DEFAULT_LOCATION_INTERVAL = 20;
-    static final long DEFAULT_TRANSMISSION_INTERVAL = 30;
+    static final long DEFAULT_LOCATION_INTERVAL_SEC = 3 * 60;
+    static final long DEFAULT_TRANSMISSION_INTERVAL_SEC = 60 * 60;
+
     static final LocationAccuracy DEFAULT_LOCATION_ACCURACY = LocationAccuracy.HIGH;
     static final boolean DEFAULT_REQUEST_LOCATION_UPDATES = false;
     // Location service intent keys

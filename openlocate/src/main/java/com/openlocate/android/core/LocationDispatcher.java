@@ -39,6 +39,7 @@ final class LocationDispatcher {
         final List<OpenLocateLocation> locations = dataSource.popAll();
 
         if (locations == null || locations.isEmpty()) {
+            Log.i(TAG, "Attempted to post locations, but found none to post.");
             return;
         }
 

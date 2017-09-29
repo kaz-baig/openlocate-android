@@ -39,7 +39,8 @@ import android.widget.Toast;
 import com.openlocate.android.callbacks.OpenLocateLocationCallback;
 import com.openlocate.android.core.OpenLocate;
 import com.openlocate.android.core.OpenLocateLocation;
-import com.openlocate.android.exceptions.LocationConfigurationException;
+import com.openlocate.android.exceptions.LocationDisabledException;
+import com.openlocate.android.exceptions.LocationPermissionException;
 import com.openlocate.example.R;
 import com.openlocate.example.adapters.SafeGraphLocationListAdapter;
 import com.openlocate.example.callbacks.SafeGraphPlaceCallback;
@@ -104,7 +105,7 @@ public class PlaceFragment extends Fragment {
                     dismissDialog();
                 }
             });
-        } catch (LocationConfigurationException e) {
+        } catch (LocationDisabledException | LocationPermissionException e) {
             showToast(e.getLocalizedMessage());
             dismissDialog();
         }

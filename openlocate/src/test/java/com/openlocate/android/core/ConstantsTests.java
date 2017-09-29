@@ -30,8 +30,8 @@ public class ConstantsTests {
 
     @Test
     public void testConstantValues() {
-        assertEquals(120, Constants.DEFAULT_LOCATION_INTERVAL);
-        assertEquals(300, Constants.DEFAULT_TRANSMISSION_INTERVAL);
+        assertEquals(3*60, Constants.DEFAULT_LOCATION_INTERVAL_SEC);
+        assertEquals(60*60, Constants.DEFAULT_TRANSMISSION_INTERVAL_SEC);
         assertEquals(LocationAccuracy.HIGH, Constants.DEFAULT_LOCATION_ACCURACY);
 
         assertEquals("url", Constants.URL_KEY);

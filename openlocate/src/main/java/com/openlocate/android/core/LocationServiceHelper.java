@@ -162,11 +162,11 @@ final class LocationServiceHelper {
     }
 
     private void setLocationRequestIntervalInSecs(Intent intent) {
-        locationRequestIntervalInSecs = intent.getLongExtra(Constants.LOCATION_INTERVAL_KEY, Constants.DEFAULT_LOCATION_INTERVAL);
+        locationRequestIntervalInSecs = intent.getLongExtra(Constants.LOCATION_INTERVAL_KEY, Constants.DEFAULT_LOCATION_INTERVAL_SEC);
     }
 
     private void setTransmissionIntervalInSecs(Intent intent) {
-        transmissionIntervalInSecs = intent.getLongExtra(Constants.TRANSMISSION_INTERVAL_KEY, Constants.DEFAULT_TRANSMISSION_INTERVAL);
+        transmissionIntervalInSecs = intent.getLongExtra(Constants.TRANSMISSION_INTERVAL_KEY, Constants.DEFAULT_TRANSMISSION_INTERVAL_SEC);
     }
 
     private void setLocationAccuracy(Intent intent) {

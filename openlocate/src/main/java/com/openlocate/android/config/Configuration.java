@@ -22,6 +22,7 @@
 package com.openlocate.android.config;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class Configuration {
     private String url;
@@ -29,20 +30,24 @@ public class Configuration {
 
     public static class Builder {
         private String url;
-        private HashMap<String, String> headers;
+        private Map<String, String> headers;
 
         public Builder setUrl(String url) {
             this.url = url;
             return this;
         }
 
-        public Builder setHeaders(HashMap<String, String> headers) {
+        public Builder setHeaders(Map<String, String> headers) {
             this.headers = headers;
             return this;
         }
 
         public Configuration build() {
-            return new Configuration(url, headers);
+            if (headers == null) {
+                return new Configuration(url, new HashMap<String, String>());
+            } else {
+                return new Configuration(url, new HashMap<>(headers));
+            }
         }
     }
 

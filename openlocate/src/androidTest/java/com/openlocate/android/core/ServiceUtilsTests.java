@@ -53,8 +53,8 @@ public class ServiceUtilsTests {
         intent.putExtra(Constants.LIMITED_AD_TRACKING_ENABLED_KEY, true);
 
         intent.putExtra(Constants.LOCATION_ACCURACY_KEY, Constants.DEFAULT_LOCATION_ACCURACY);
-        intent.putExtra(Constants.LOCATION_INTERVAL_KEY, Constants.DEFAULT_LOCATION_INTERVAL);
-        intent.putExtra(Constants.TRANSMISSION_INTERVAL_KEY, Constants.DEFAULT_TRANSMISSION_INTERVAL);
+        intent.putExtra(Constants.LOCATION_INTERVAL_KEY, Constants.DEFAULT_LOCATION_INTERVAL_SEC);
+        intent.putExtra(Constants.TRANSMISSION_INTERVAL_KEY, Constants.DEFAULT_TRANSMISSION_INTERVAL_SEC);
 
         // When
         boolean isRunning = ServiceUtils.isServiceRunning(LocationService.class, context);

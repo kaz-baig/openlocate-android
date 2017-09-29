@@ -21,8 +21,22 @@
  */
 package com.openlocate.android.exceptions;
 
-public class LocationConfigurationException extends IllegalStateException {
-    public LocationConfigurationException(String message) {
-        super(message);
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
+public class LocationDisabledExceptionTests {
+
+    private static final String MESSAGE = "Error message";
+
+    @Test
+    public void testException() {
+        // Given
+        LocationDisabledException exception = new LocationDisabledException(
+                MESSAGE
+        );
+
+        // Then
+        assertEquals(MESSAGE, exception.getMessage());
     }
 }

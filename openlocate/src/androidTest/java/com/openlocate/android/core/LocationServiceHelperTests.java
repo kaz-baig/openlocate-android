@@ -57,8 +57,8 @@ public class LocationServiceHelperTests {
 //        intent.putExtra(Constants.LIMITED_AD_TRACKING_ENABLED_KEY, true);
 //
 //        intent.putExtra(Constants.LOCATION_ACCURACY_KEY, Constants.DEFAULT_LOCATION_ACCURACY);
-//        intent.putExtra(Constants.LOCATION_INTERVAL_KEY, Constants.DEFAULT_LOCATION_INTERVAL);
-//        intent.putExtra(Constants.TRANSMISSION_INTERVAL_KEY, Constants.DEFAULT_TRANSMISSION_INTERVAL);
+//        intent.putExtra(Constants.LOCATION_INTERVAL_KEY, Constants.DEFAULT_LOCATION_INTERVAL_SEC);
+//        intent.putExtra(Constants.TRANSMISSION_INTERVAL_KEY, Constants.DEFAULT_TRANSMISSION_INTERVAL_SEC);
 //
 //        // When
 //        helper.onStartCommand(intent);
@@ -69,8 +69,8 @@ public class LocationServiceHelperTests {
 //        assertEquals(helper.getHeaders().get("Key"), "Value");
 //        assertEquals(helper.getAdvertisingInfo().getAdvertisingId(), "1234");
 //        assertEquals(helper.getAdvertisingInfo().isLimitedAdTrackingEnabled(), true);
-//        assertEquals(helper.getLocationRequestIntervalInSecs(), Constants.DEFAULT_LOCATION_INTERVAL);
-//        assertEquals(helper.getTransmissionIntervalInSecs(), Constants.DEFAULT_TRANSMISSION_INTERVAL);
+//        assertEquals(helper.getLocationRequestIntervalInSecs(), Constants.DEFAULT_LOCATION_INTERVAL_SEC);
+//        assertEquals(helper.getTransmissionIntervalInSecs(), Constants.DEFAULT_TRANSMISSION_INTERVAL_SEC);
     }
 
     @Test

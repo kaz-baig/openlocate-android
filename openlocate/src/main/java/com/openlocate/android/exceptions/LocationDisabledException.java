@@ -21,8 +21,8 @@
  */
 package com.openlocate.android.exceptions;
 
-public class LocationServiceConflictException extends IllegalStateException {
-    public LocationServiceConflictException(String message) {
+public class LocationDisabledException extends Exception {
+    public LocationDisabledException(String message) {
         super(message);
     }
 }
