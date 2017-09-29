@@ -55,14 +55,30 @@ compile 'com.openlocate:openlocate:0.1.8'
 ## Usage
 
 ### Start tracking of location
-
-Build your configuration with your URL and headers and supply it to the `startTracking` method.
+Configure where the SDK should send data to by building the configuration with appropriate URL and headers. Supply the configuration to the `startTracking` method.
 
 ```java
 Configuration config = new Configuration.Builder()
                     .setUrl(<Your URL>)
                     .setHeaders(<Your Headers>)
-                    .createConfiguration();
+                    .build();
+try {
+  OpenLocate.getInstance(context).startTracking(config);
+} catch (Exception e) {
+  Log.e("OpenLocate", e.getMessage())
+}
+```
+
+#### For example, to send data to SafeGraph:
+
+```java
+HashMap<String, String> headers = new HashMap<>();
+headers.put("Authorization", "Bearer <TOKEN>");
+
+Configuration config = new Configuration.Builder()
+        .setUrl("https://api.safegraph.com/v1/provider/<UUID>/devicelocation")
+        .setHeaders(headers)
+        .build();
 try {
   OpenLocate.getInstance(context).startTracking(config);
 } catch (Exception e) {

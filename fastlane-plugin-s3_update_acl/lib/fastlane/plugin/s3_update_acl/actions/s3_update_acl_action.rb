@@ -4,9 +4,9 @@ module Fastlane
       def self.run(params)
         version = params[:version]
 
-        update_acl(params, "com/openlocate/openlocate/#{version}/openlocate-#{version}.jar")
-        update_acl(params, "com/openlocate/openlocate/#{version}/openlocate-#{version}.jar.sha1")
-        update_acl(params, "com/openlocate/openlocate/#{version}/openlocate-#{version}.jar.md5")
+        update_acl(params, "com/openlocate/openlocate/#{version}/openlocate-#{version}.aar")
+        update_acl(params, "com/openlocate/openlocate/#{version}/openlocate-#{version}.aar.sha1")
+        update_acl(params, "com/openlocate/openlocate/#{version}/openlocate-#{version}.aar.md5")
 
         update_acl(params, "com/openlocate/openlocate/#{version}/openlocate-#{version}.pom")
         update_acl(params, "com/openlocate/openlocate/#{version}/openlocate-#{version}.pom.sha1")

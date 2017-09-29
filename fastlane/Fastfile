@@ -74,7 +74,7 @@ platform :android do
     #ensure_git_branch
 
     version = lane[:version]
-    gradle(task: "jarRelease publish")
+    gradle(task: "publish")
 
     s3_update_acl(
       region: ENV['S3_REGION'],
