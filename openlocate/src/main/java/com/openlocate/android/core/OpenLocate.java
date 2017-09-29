@@ -21,8 +21,10 @@
  */
 package com.openlocate.android.core;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -34,7 +36,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.openlocate.android.callbacks.AddLocationCallback;
 import com.openlocate.android.callbacks.OpenLocateLocationCallback;
 import com.openlocate.android.config.Configuration;
 import com.openlocate.android.exceptions.InvalidConfigurationException;
@@ -43,6 +44,7 @@ import com.openlocate.android.exceptions.LocationPermissionException;
 import com.openlocate.android.exceptions.LocationServiceConflictException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class OpenLocate implements OpenLocateLocationTracker {
@@ -59,9 +61,25 @@ public class OpenLocate implements OpenLocateLocationTracker {
     private LocationDatabase locations;
     private AdvertisingIdClient.Info advertisingInfo;
     private Configuration configuration;
+    private HashSet<Location> locationsTemp =  new HashSet<>();
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "Service started");
+            if (locationsTemp.size() > 0) {
+                for (Location location:locationsTemp) {
+                    addLocation(location);
+                }
+            }
+            locationsTemp.clear();
+        }
+    };
 
     private OpenLocate(Context context) {
         this.context = context;
+        LocalBroadcastManager.getInstance(context).registerReceiver(mMessageReceiver,
+                new IntentFilter(Constants.INTENT_SERVICE_STARTED));
     }
 
     public static OpenLocate getInstance(Context context) {
@@ -132,9 +150,12 @@ public class OpenLocate implements OpenLocateLocationTracker {
         locations = new LocationDatabase(helper);
     }
 
+    /**
+     * Adds single location to the database.
+     * @param location
+     */
     @Override
-    public void addLocation(Location location, AddLocationCallback callback) {
-        //save single location
+    public void addLocation(Location location) {
 
         if (locations == null) {
             initDatabase();
@@ -149,16 +170,18 @@ public class OpenLocate implements OpenLocateLocationTracker {
         {
             OpenLocateLocation openLocatelocation = new OpenLocateLocation(location, advertisingInfo);
             locations.add(openLocatelocation);
-            callback.onSuccess();
         } else {
-            callback.onError(new Error("Location could not be added."));
+            locationsTemp.add(location);
         }
 
     }
 
+    /**
+     * Adds list of locations to the database.
+     * @param locationList
+     */
     @Override
-    public void addLocations(List<Location> locationList, AddLocationCallback callback) {
-        //save list of locations
+    public void addLocations(List<Location> locationList) {
 
         if (locations == null) {
             initDatabase();
@@ -176,13 +199,14 @@ public class OpenLocate implements OpenLocateLocationTracker {
                 OpenLocateLocation openLocateLocation = new OpenLocateLocation(location, advertisingInfo);
                 openLocateLocations.add(openLocateLocation);
             }
-
             locations.addAll(openLocateLocations);
-            callback.onSuccess();
         } else {
-            callback.onError(new Error("Locations could not be added."));
+            locationsTemp.addAll(locationList);
         }
 
+        /*
+          Alternatively I can use foreach and call addLocation for each location. Please suggest.
+         */
     }
 
     private void onFetchCurrentLocation(final Location location, final OpenLocateLocationCallback callback) {
@@ -210,6 +234,9 @@ public class OpenLocate implements OpenLocateLocationTracker {
         }
 
         context.startService(intent);
+
+        Intent serviceIntent = new Intent(Constants.INTENT_SERVICE_STARTED);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(serviceIntent);
     }
 
     private void updateAdvertisingInfo(Intent intent, String advertisingId, boolean isLimitedAdTrackingEnabled) {
@@ -284,6 +311,9 @@ public class OpenLocate implements OpenLocateLocationTracker {
     public void stopTracking() {
         Intent intent = new Intent(context, LocationService.class);
         context.stopService(intent);
+
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(mMessageReceiver);
+        locationsTemp.clear();
     }
 
     @Override

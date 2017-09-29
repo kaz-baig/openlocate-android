@@ -136,25 +136,17 @@ public class TrackFragment extends Fragment {
                         public void onSuccess(Location location) {
                             // Got last known location. In some rare situations this can be null.
                             if (location != null) {
-                                openLocate.addLocation(location, new AddLocationCallback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        Toast.makeText(getActivity(), "Location added successfully", Toast.LENGTH_LONG).show();;
-                                    }
-
-                                    @Override
-                                    public void onError(Error error) {
-                                        Log.d(TAG, "onError: Could not be added at the momemnt");
-                                        Toast.makeText(getActivity(), "Location could not be added at the moment. Please try again", Toast.LENGTH_LONG).show();
-                                    }
-                                });
+                                openLocate.addLocation(location);
                             }
                         }
                     });
 
         } catch (SecurityException e) {
             Log.d(TAG, "Check location permissions");
+            return;
         }
+
+        onStartService();
 
     }
 

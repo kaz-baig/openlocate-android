@@ -46,4 +46,5 @@ final class Constants {
     static final String LOCATION_ACCURACY_CHANGED = Constants.class.getCanonicalName() + ".LocationAccuracyChanged";
     static final String TRANSMISSION_INTERVAL_CHANGED = Constants.class.getCanonicalName() + ".TransmissionIntervalChanged";
     static final String REQUEST_LOCATION_UPDATES = "request_location";
+    static final String INTENT_SERVICE_STARTED = "service_started";
 }

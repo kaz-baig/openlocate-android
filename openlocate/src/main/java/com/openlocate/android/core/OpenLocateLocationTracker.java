@@ -48,9 +48,9 @@ interface OpenLocateLocationTracker {
             throws LocationConfigurationException,
             LocationPermissionException;
 
-    void addLocation(Location location, AddLocationCallback callback);
+    void addLocation(Location location);
 
-    void addLocations(List<Location> locations, AddLocationCallback locationCallback);
+    void addLocations(List<Location> locations);
 
     void stopTracking();
 
