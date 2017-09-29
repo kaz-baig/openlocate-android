@@ -34,6 +34,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.openlocate.android.callbacks.AddLocationCallback;
 import com.openlocate.android.callbacks.OpenLocateLocationCallback;
 import com.openlocate.android.config.Configuration;
 import com.openlocate.android.exceptions.InvalidConfigurationException;
@@ -132,41 +133,55 @@ public class OpenLocate implements OpenLocateLocationTracker {
     }
 
     @Override
-    public void addLocation(Location location) {
+    public void addLocation(Location location, AddLocationCallback callback) {
         //save single location
 
         if (locations == null) {
             initDatabase();
         }
 
-        if(!ServiceUtils.isServiceRunning(LocationService.class, context)) {
+        boolean isRunning = ServiceUtils.isServiceRunning(LocationService.class, context);
+        if(!isRunning) {
             startTracking(configuration, Constants.DEFAULT_REQUEST_LOCATION_UPDATES);
         }
 
-        OpenLocateLocation openLocatelocation = new OpenLocateLocation(location, advertisingInfo);
-        locations.add(openLocatelocation);
+        if (isRunning && advertisingInfo != null)
+        {
+            OpenLocateLocation openLocatelocation = new OpenLocateLocation(location, advertisingInfo);
+            locations.add(openLocatelocation);
+            callback.onSuccess();
+        } else {
+            callback.onError(new Error("Location could not be added."));
+        }
+
     }
 
     @Override
-    public void addLocations(List<Location> locationList) {
+    public void addLocations(List<Location> locationList, AddLocationCallback callback) {
         //save list of locations
 
         if (locations == null) {
             initDatabase();
         }
 
-        if(!ServiceUtils.isServiceRunning(LocationService.class, context)) {
+        boolean isRunning = ServiceUtils.isServiceRunning(LocationService.class, context);
+        if(!isRunning) {
             startTracking(configuration, Constants.DEFAULT_REQUEST_LOCATION_UPDATES);
         }
 
         List<OpenLocateLocation> openLocateLocations = new ArrayList<>();
 
-        for (Location location: locationList) {
-            OpenLocateLocation openLocateLocation = new OpenLocateLocation(location, advertisingInfo);
-            openLocateLocations.add(openLocateLocation);
-        }
+        if (isRunning && advertisingInfo != null) {
+            for (Location location : locationList) {
+                OpenLocateLocation openLocateLocation = new OpenLocateLocation(location, advertisingInfo);
+                openLocateLocations.add(openLocateLocation);
+            }
 
-        locations.addAll(openLocateLocations);
+            locations.addAll(openLocateLocations);
+            callback.onSuccess();
+        } else {
+            callback.onError(new Error("Locations could not be added."));
+        }
 
     }
 

@@ -23,6 +23,7 @@ package com.openlocate.android.core;
 
 import android.location.Location;
 
+import com.openlocate.android.callbacks.AddLocationCallback;
 import com.openlocate.android.callbacks.OpenLocateLocationCallback;
 import com.openlocate.android.config.Configuration;
 import com.openlocate.android.exceptions.InvalidConfigurationException;
@@ -47,9 +48,9 @@ interface OpenLocateLocationTracker {
             throws LocationConfigurationException,
             LocationPermissionException;
 
-    void addLocation(Location location);
+    void addLocation(Location location, AddLocationCallback callback);
 
-    void addLocations(List<Location> locations);
+    void addLocations(List<Location> locations, AddLocationCallback locationCallback);
 
     void stopTracking();
 

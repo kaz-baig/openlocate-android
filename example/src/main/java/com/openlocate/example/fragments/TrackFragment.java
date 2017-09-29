@@ -41,6 +41,7 @@ import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.openlocate.android.callbacks.AddLocationCallback;
 import com.openlocate.android.config.Configuration;
 import com.openlocate.android.core.OpenLocate;
 import com.openlocate.android.exceptions.InvalidConfigurationException;
@@ -65,6 +66,7 @@ public class TrackFragment extends Fragment {
     private OpenLocate openLocate;
 
     private FusedLocationProviderClient mFusedLocationClient;
+    private Configuration configuration;
 
 
     public static TrackFragment getInstance() {
@@ -76,6 +78,18 @@ public class TrackFragment extends Fragment {
         super.onCreate(savedInstanceState);
         activity = getActivity();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
+        initOpenlocate();
+    }
+
+    private void initOpenlocate() {
+        configuration = new Configuration.Builder()
+                .setUrl(BuildConfig.URL)
+                .setHeaders(getHeader())
+                .build();
+
+        openLocate = OpenLocate.getInstance(activity);
+        openLocate.init(configuration);
     }
 
     @Nullable
@@ -122,7 +136,18 @@ public class TrackFragment extends Fragment {
                         public void onSuccess(Location location) {
                             // Got last known location. In some rare situations this can be null.
                             if (location != null) {
-                                openLocate.addLocation(location);
+                                openLocate.addLocation(location, new AddLocationCallback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Toast.makeText(getActivity(), "Location added successfully", Toast.LENGTH_LONG).show();;
+                                    }
+
+                                    @Override
+                                    public void onError(Error error) {
+                                        Log.d(TAG, "onError: Could not be added at the momemnt");
+                                        Toast.makeText(getActivity(), "Location could not be added at the moment. Please try again", Toast.LENGTH_LONG).show();
+                                    }
+                                });
                             }
                         }
                     });
@@ -142,15 +167,8 @@ public class TrackFragment extends Fragment {
     private void startTracking() {
 
         try {
-            Configuration configuration = new Configuration.Builder()
-                    .setUrl(BuildConfig.URL)
-                    .setHeaders(getHeader())
-                    .build();
 
             boolean requestLocationUpdates = true;
-
-            openLocate = OpenLocate.getInstance(activity);
-            openLocate.init(configuration);
             openLocate.startTracking(configuration, requestLocationUpdates);
 
             Toast.makeText(activity, getString(R.string.sercive_started), Toast.LENGTH_LONG).show();
