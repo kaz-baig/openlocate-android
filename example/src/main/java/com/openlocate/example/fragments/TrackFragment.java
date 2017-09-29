@@ -38,6 +38,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.openlocate.android.config.Configuration;
 import com.openlocate.android.core.OpenLocate;
 import com.openlocate.android.exceptions.InvalidConfigurationException;
@@ -61,6 +64,9 @@ public class TrackFragment extends Fragment {
     private Button addButton;
     private OpenLocate openLocate;
 
+    private FusedLocationProviderClient mFusedLocationClient;
+
+
     public static TrackFragment getInstance() {
         return new TrackFragment();
     }
@@ -69,6 +75,7 @@ public class TrackFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = getActivity();
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
     }
 
     @Nullable
@@ -107,11 +114,22 @@ public class TrackFragment extends Fragment {
     }
 
     private void addLocation() {
-        Location loc = new Location("");
-        loc.setLatitude(new Double(19));
-        loc.setLongitude(new Double(72));
 
-        openLocate.addLocation(loc);
+        try {
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                openLocate.addLocation(location);
+                            }
+                        }
+                    });
+
+        } catch (SecurityException e) {
+            Log.d(TAG, "Check location permissions");
+        }
 
     }
 
@@ -129,7 +147,7 @@ public class TrackFragment extends Fragment {
                     .setHeaders(getHeader())
                     .build();
 
-            boolean requestLocationUpdates = false;
+            boolean requestLocationUpdates = true;
 
             openLocate = OpenLocate.getInstance(activity);
             openLocate.init(configuration);
