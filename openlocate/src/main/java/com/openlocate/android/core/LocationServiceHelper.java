@@ -34,6 +34,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.gcm.GcmNetworkManager;
@@ -64,7 +65,7 @@ final class LocationServiceHelper {
     private String url;
     private HashMap<String, String> headers;
 
-    private AdvertisingInfo advertisingInfo;
+    private AdvertisingIdClient.Info advertisingInfo;
 
     private Context context;
 
@@ -144,7 +145,7 @@ final class LocationServiceHelper {
         url = intent.getStringExtra(Constants.URL_KEY);
         headers = (HashMap<String, String>) intent.getSerializableExtra(Constants.HEADER_KEY);
 
-        advertisingInfo = new AdvertisingInfo(
+        advertisingInfo = new AdvertisingIdClient.Info(
                 intent.getStringExtra(Constants.ADVERTISING_ID_KEY),
                 intent.getBooleanExtra(Constants.LIMITED_AD_TRACKING_ENABLED_KEY, false)
         );
@@ -269,8 +270,17 @@ final class LocationServiceHelper {
 
         @Override
         public void onLocationChanged(Location location) {
+
             Log.v(TAG, location.toString());
-            locations.add(new OpenLocateLocation(location, advertisingInfo));
+            locations.add(
+                    new OpenLocateLocation(
+                            location,
+                            advertisingInfo,
+                            new DeviceInfo(context),
+                            new NetworkInfo(context),
+                            LocationProvider.getLocationProvider(context)
+                    )
+            );
             Log.v(TAG, "COUNT - " + locations.size());
         }
     }
@@ -315,7 +325,7 @@ final class LocationServiceHelper {
         return headers;
     }
 
-    AdvertisingInfo getAdvertisingInfo() {
+    AdvertisingIdClient.Info getAdvertisingInfo() {
         return advertisingInfo;
     }
 

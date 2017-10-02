@@ -97,4 +97,14 @@ final class NetworkInfo {
     String getConnectionType() {
         return connectionType;
     }
+
+    @Override
+    public String toString() {
+        return "NetworkInfo{" +
+                "carrierName='" + carrierName + '\'' +
+                ", wifiSsid='" + wifiSsid + '\'' +
+                ", wifiBssid='" + wifiBssid + '\'' +
+                ", connectionType='" + connectionType + '\'' +
+                '}';
+    }
 }

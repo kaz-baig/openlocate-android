@@ -21,10 +21,14 @@
  */
 package com.openlocate.android.core;
 
+import android.content.Context;
+import android.location.LocationManager;
+
 enum LocationProvider {
     GPS("gps"),
     NETWORK("network"),
-    PASSIVE("passive");
+    PASSIVE("passive"),
+    DISABLED("disabled");
 
     private final String value;
 
@@ -35,5 +39,23 @@ enum LocationProvider {
     @Override
     public String toString() {
         return value;
+    }
+
+    static LocationProvider getLocationProvider(Context context) {
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            return GPS;
+        }
+
+        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            return NETWORK;
+        }
+
+        if (locationManager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
+            return PASSIVE;
+        }
+
+        return DISABLED;
     }
 }

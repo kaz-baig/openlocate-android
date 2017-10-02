@@ -23,6 +23,8 @@ package com.openlocate.android.core;
 
 import android.location.Location;
 
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -64,24 +66,72 @@ public final class OpenLocateLocation implements JsonObjectType {
     private static final String ADVERTISING_ID_TYPE = "aaid";
 
     private LocationInfo location;
-    private AdvertisingInfo advertisingInfo;
+    private AdvertisingIdClient.Info advertisingInfo;
     private DeviceInfo deviceInfo;
     private NetworkInfo networkInfo;
-    private UserInfo userInfo;
     private LocationProvider provider;
+
+    public LocationInfo getLocation() {
+        return location;
+    }
+
+    public void setLocation(LocationInfo location) {
+        this.location = location;
+    }
+
+    public AdvertisingIdClient.Info getAdvertisingInfo() {
+        return advertisingInfo;
+    }
+
+    public void setAdvertisingInfo(AdvertisingIdClient.Info advertisingInfo) {
+        this.advertisingInfo = advertisingInfo;
+    }
+
+    public DeviceInfo getDeviceInfo() {
+        return deviceInfo;
+    }
+
+    public void setDeviceInfo(DeviceInfo deviceInfo) {
+        this.deviceInfo = deviceInfo;
+    }
+
+    public NetworkInfo getNetworkInfo() {
+        return networkInfo;
+    }
+
+    public void setNetworkInfo(NetworkInfo networkInfo) {
+        this.networkInfo = networkInfo;
+    }
+
+    public LocationProvider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(LocationProvider provider) {
+        this.provider = provider;
+    }
+
+    @Override
+    public String toString() {
+        return "OpenLocateLocation{" +
+                "location=" + location +
+                ", advertisingInfo=" + advertisingInfo +
+                ", deviceInfo=" + deviceInfo +
+                ", networkInfo=" + networkInfo +
+                ", provider=" + provider +
+                '}';
+    }
 
     OpenLocateLocation(
             Location location,
-            AdvertisingInfo advertisingInfo,
+            AdvertisingIdClient.Info advertisingInfo,
             DeviceInfo deviceInfo,
             NetworkInfo networkInfo,
-            UserInfo userInfo,
             LocationProvider provider) {
         this.location = new LocationInfo(location);
         this.advertisingInfo = advertisingInfo;
         this.deviceInfo = deviceInfo;
         this.networkInfo = networkInfo;
-        this.userInfo = userInfo;
         this.provider = provider;
     }
 
@@ -98,7 +148,7 @@ public final class OpenLocateLocation implements JsonObjectType {
             location.setCourse(Float.parseFloat(json.getString(Keys.COURSE)));
             location.setSpeed(Float.parseFloat(json.getString(Keys.SPEED)));
 
-            advertisingInfo = new AdvertisingInfo(
+            advertisingInfo = new AdvertisingIdClient.Info(
                     json.getString(Keys.AD_ID),
                     json.getBoolean(Keys.AD_OPT_OUT)
             );
@@ -117,13 +167,7 @@ public final class OpenLocateLocation implements JsonObjectType {
                     json.getString(Keys.CONNECTION_TYPE)
             );
 
-            userInfo = new UserInfo(
-                    json.getString(Keys.EMAIL_ADDR),
-                    json.getString(Keys.USER_ID_3P),
-                    json.getString(Keys.PROVIDER_SOURCE_ID)
-            );
-
-            provider = LocationProvider.valueOf(json.getString(Keys.LOCATION_METHOD));
+            provider = Enum.valueOf(LocationProvider.class,json.getString(Keys.LOCATION_METHOD));
         } catch (JSONException exception) {
             exception.printStackTrace();
         }
@@ -143,8 +187,8 @@ public final class OpenLocateLocation implements JsonObjectType {
                     .put(Keys.SPEED, String.valueOf(location.getSpeed()))
                     .put(Keys.ALTITUDE, location.getAltitude())
 
-                    .put(Keys.AD_ID, advertisingInfo.getAdvertisingId())
-                    .put(Keys.AD_OPT_OUT, advertisingInfo.isLimitedAdTrackingEnabled())
+                    .put(Keys.AD_ID, advertisingInfo.getId())
+                    .put(Keys.AD_OPT_OUT, advertisingInfo.isLimitAdTrackingEnabled())
                     .put(Keys.AD_TYPE, ADVERTISING_ID_TYPE)
 
                     .put(Keys.DEVICE_MANUFACTURER, deviceInfo.getManufacturer())
@@ -157,11 +201,6 @@ public final class OpenLocateLocation implements JsonObjectType {
                     .put(Keys.WIFI_BSSID, networkInfo.getWifiBssid())
                     .put(Keys.CONNECTION_TYPE, networkInfo.getConnectionType())
 
-                    .put(Keys.EMAIL_ADDR, userInfo.getEmail())
-                    .put(Keys.EMAIL_ADDR_SHA256, userInfo.getEmailSha256())
-                    .put(Keys.USER_ID_3P, userInfo.getUserId3p())
-                    .put(Keys.PROVIDER_SOURCE_ID, userInfo.getProviderSourceId())
-
                     .put(Keys.LOCATION_METHOD, provider.toString());
         } catch (NullPointerException | JSONException e) {
             e.printStackTrace();
@@ -170,84 +209,98 @@ public final class OpenLocateLocation implements JsonObjectType {
         return jsonObject;
     }
 
-        private class LocationInfo {
+    public class LocationInfo {
 
-            private double latitude;
-            private double longitude;
-            private float horizontalAccuracy;
-            private long timeStamp;
-            private float speed;
-            private float course;
-            private double altitude;
+        private double latitude;
+        private double longitude;
+        private float horizontalAccuracy;
+        private long timeStamp;
+        private float speed;
+        private float course;
+        private double altitude;
 
-            private LocationInfo() {
+        LocationInfo() {
 
-            }
-
-            private LocationInfo(Location location) {
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-                horizontalAccuracy = location.getAccuracy();
-                timeStamp = location.getTime();
-                speed = location.getSpeed();
-                course = location.getBearing();
-                altitude = location.getAltitude();
-            }
-
-            double getLatitude() {
-                return latitude;
-            }
-
-            void setLatitude(double latitude) {
-                this.latitude = latitude;
-            }
-
-            double getLongitude() {
-                return longitude;
-            }
-
-            void setLongitude(double longitude) {
-                this.longitude = longitude;
-            }
-
-            double getHorizontalAccuracy() {
-                return horizontalAccuracy;
-            }
-
-            void setHorizontalAccuracy(float horizontalAccuracy) {
-                this.horizontalAccuracy = horizontalAccuracy;
-            }
-
-            long getTimeStamp() {
-                return timeStamp;
-            }
-
-            void setTimeStamp(long timeStamp) {
-                this.timeStamp = timeStamp;
-            }
-
-            float getSpeed() {
-                return speed;
-            }
-
-            void setSpeed(float speed) {
-                this.speed = speed;
-            }
-
-            float getCourse() {
-                return course;
-            }
-
-            void setCourse(float course) {
-                this.course = course;
-            }
-
-            double getAltitude() {
-                return altitude;
-            }
-
-            void setAltitude(double altitude) {
-                this.altitude = altitude;
-            }
         }
+
+        LocationInfo(Location location) {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+            horizontalAccuracy = location.getAccuracy();
+            timeStamp = location.getTime();
+            speed = location.getSpeed();
+            course = location.getBearing();
+            altitude = location.getAltitude();
+        }
+
+        public double getLatitude() {
+            return latitude;
+        }
+
+        void setLatitude(double latitude) {
+            this.latitude = latitude;
+        }
+
+        public double getLongitude() {
+            return longitude;
+        }
+
+        void setLongitude(double longitude) {
+            this.longitude = longitude;
+        }
+
+        public double getHorizontalAccuracy() {
+            return horizontalAccuracy;
+        }
+
+        void setHorizontalAccuracy(float horizontalAccuracy) {
+            this.horizontalAccuracy = horizontalAccuracy;
+        }
+
+        long getTimeStamp() {
+            return timeStamp;
+        }
+
+        void setTimeStamp(long timeStamp) {
+            this.timeStamp = timeStamp;
+        }
+
+        float getSpeed() {
+            return speed;
+        }
+
+        void setSpeed(float speed) {
+            this.speed = speed;
+        }
+
+        float getCourse() {
+            return course;
+        }
+
+        void setCourse(float course) {
+            this.course = course;
+        }
+
+        double getAltitude() {
+            return altitude;
+        }
+
+        void setAltitude(double altitude) {
+            this.altitude = altitude;
+        }
+
+        @Override
+        public String toString() {
+            return "LocationInfo{" +
+                    "latitude=" + latitude +
+                    ", longitude=" + longitude +
+                    ", horizontalAccuracy=" + horizontalAccuracy +
+                    ", timeStamp=" + timeStamp +
+                    ", speed=" + speed +
+                    ", course=" + course +
+                    ", altitude=" + altitude +
+                    '}';
+        }
+    }
+
 }

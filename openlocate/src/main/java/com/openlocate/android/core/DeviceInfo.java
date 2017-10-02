@@ -74,4 +74,14 @@ final class DeviceInfo {
         int status = batteryIntent.getIntExtra(BatteryManager.EXTRA_STATUS, 0);
         return status == BatteryManager.BATTERY_STATUS_CHARGING;
     }
+
+    @Override
+    public String toString() {
+        return "DeviceInfo{" +
+                "manufacturer='" + manufacturer + '\'' +
+                ", model='" + model + '\'' +
+                ", operatingSystem='" + operatingSystem + '\'' +
+                ", isCharging=" + isCharging +
+                '}';
+    }
 }

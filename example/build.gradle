@@ -33,15 +33,15 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', 'TOKEN', "\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6WyJpbmdlc3Q6NzRkMmU0NDUtZDkxZC00NDVjLTg0MTMtYjA3YTdlYzc2ZTYzIl0sInByb3ZpZGVyX2lkIjo5OTk5OSwiaWF0IjoxNTAyMzIyNDM5LCJleHAiOjE2NjAxMTA0MzksImF1ZCI6Imh0dHBzOi8vSW5nZXN0U2VydmVyIn0.t-xVsYjQ_Mxvv4hElxUpPgKqCalaWwQdGhlXpruILx8\""
-            buildConfigField 'String', 'UUID', "\"74d2e445-d91d-445c-8413-b07a7ec76e63\""
-            buildConfigField 'String', 'URL', "\"https://api.safegraph.com/v1/provider/74d2e445-d91d-445c-8413-b07a7ec76e63/devicelocation\""
+            buildConfigField 'String', 'TOKEN', "\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6ImluZ2VzdDoxN2QzNzVlYy1hMmVhLTExZTctODA3OC0wMmFlNDdiOWZmNmIiLCJwcm92aWRlcl9pZCI6MTcyLCJleHBpcmVzSW4iOiI1eSIsImF1ZCI6Imh0dHBzOi8vSW5nZXN0U2VydmVyIn0.TadKLrE672a6MHJdQcFkAK53JSpSnu-MxW4iJC-zUeU\""
+            buildConfigField 'String', 'UUID', "\"17d375ec-a2ea-11e7-8078-02ae47b9ff6b\""
+            buildConfigField 'String', 'URL', "\"https://api.safegraph.com/v1/provider/17d375ec-a2ea-11e7-8078-02ae47b9ff6b/devicelocation\""
         }
 
         debug {
-            buildConfigField 'String', 'TOKEN', "\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6WyJpbmdlc3Q6NzRkMmU0NDUtZDkxZC00NDVjLTg0MTMtYjA3YTdlYzc2ZTYzIl0sInByb3ZpZGVyX2lkIjo5OTk5OSwiaWF0IjoxNTAyMzIyNDM5LCJleHAiOjE2NjAxMTA0MzksImF1ZCI6Imh0dHBzOi8vSW5nZXN0U2VydmVyIn0.t-xVsYjQ_Mxvv4hElxUpPgKqCalaWwQdGhlXpruILx8\""
-            buildConfigField 'String', 'UUID', "\"74d2e445-d91d-445c-8413-b07a7ec76e63\""
-            buildConfigField 'String', 'URL', "\"https://api.safegraph.com/v1/provider/74d2e445-d91d-445c-8413-b07a7ec76e63/devicelocation\""
+            buildConfigField 'String', 'TOKEN', "\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6ImluZ2VzdDoxN2QzNzVlYy1hMmVhLTExZTctODA3OC0wMmFlNDdiOWZmNmIiLCJwcm92aWRlcl9pZCI6MTcyLCJleHBpcmVzSW4iOiI1eSIsImF1ZCI6Imh0dHBzOi8vSW5nZXN0U2VydmVyIn0.TadKLrE672a6MHJdQcFkAK53JSpSnu-MxW4iJC-zUeU\""
+            buildConfigField 'String', 'UUID', "\"17d375ec-a2ea-11e7-8078-02ae47b9ff6b\""
+            buildConfigField 'String', 'URL', "\"https://api.safegraph.com/v1/provider/17d375ec-a2ea-11e7-8078-02ae47b9ff6b/devicelocation\""
         }
     }
 }
