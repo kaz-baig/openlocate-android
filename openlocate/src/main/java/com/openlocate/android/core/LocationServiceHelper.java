@@ -21,6 +21,7 @@
  */
 package com.openlocate.android.core;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -33,6 +34,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.ConnectionResult;
@@ -44,6 +46,9 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.HashMap;
+
+import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
+import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
 
 final class LocationServiceHelper {
 
@@ -278,10 +283,12 @@ final class LocationServiceHelper {
                             advertisingInfo,
                             new DeviceInfo(context),
                             new NetworkInfo(context),
-                            LocationProvider.getLocationProvider(context)
+                            LocationProvider.getLocationProvider(context),
+                            LocationContext.getLocationContext()
                     )
             );
             Log.v(TAG, "COUNT - " + locations.size());
+
         }
     }
 

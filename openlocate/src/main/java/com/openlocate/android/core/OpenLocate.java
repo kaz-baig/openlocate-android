@@ -118,7 +118,8 @@ public class OpenLocate implements OpenLocateLocationTracker {
                                 info,
                                 new DeviceInfo(context),
                                 new NetworkInfo(context),
-                                LocationProvider.getLocationProvider(context)
+                                LocationProvider.getLocationProvider(context),
+                                LocationContext.getLocationContext()
                         )
                 );
             }

@@ -24,6 +24,9 @@ package com.openlocate.android.core;
 import android.content.Context;
 import android.location.LocationManager;
 
+import java.util.HashMap;
+import java.util.Map;
+
 enum LocationProvider {
     GPS("gps"),
     NETWORK("network"),
@@ -32,6 +35,14 @@ enum LocationProvider {
 
     private final String value;
 
+    private static final Map<String, LocationProvider>  lookup  = new HashMap<>();
+
+    static {
+        for (LocationProvider provider: LocationProvider.values()) {
+                lookup.put(provider.toString(), provider);
+        }
+    }
+
     LocationProvider(final String value) {
         this.value = value;
     }
@@ -39,6 +50,10 @@ enum LocationProvider {
     @Override
     public String toString() {
         return value;
+    }
+
+    public static LocationProvider get(String value) {
+        return lookup.get(value);
     }
 
     static LocationProvider getLocationProvider(Context context) {

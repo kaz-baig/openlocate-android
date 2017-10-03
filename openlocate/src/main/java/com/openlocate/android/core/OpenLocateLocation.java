@@ -43,11 +43,6 @@ public final class OpenLocateLocation implements JsonObjectType {
         static final String SPEED = "speed";
         static final String ALTITUDE = "altitude";
 
-        static final String PROVIDER_SOURCE_ID = "provider_source_id";
-        static final String EMAIL_ADDR = "email_addr";
-        static final String EMAIL_ADDR_SHA256 = "email_addr_sha256";
-        static final String USER_ID_3P = "user_id_3p";
-
         static final String IS_CHARGING = "is_charging";
         static final String DEVICE_MANUFACTURER = "device_manufacturer";
         static final String DEVICE_MODEL = "device_model";
@@ -56,7 +51,6 @@ public final class OpenLocateLocation implements JsonObjectType {
         static final String LOCATION_METHOD = "location_method";
         static final String LOCATION_CONTEXT = "location_context";
 
-        static final String IP_ADDRESS = "ip_address";
         static final String CARRIER_NAME = "carrier_name";
         static final String CONNECTION_TYPE = "connection_type";
         static final String WIFI_SSID = "wifi_ssid";
@@ -70,6 +64,7 @@ public final class OpenLocateLocation implements JsonObjectType {
     private DeviceInfo deviceInfo;
     private NetworkInfo networkInfo;
     private LocationProvider provider;
+    private LocationContext locationContext;
 
     public LocationInfo getLocation() {
         return location;
@@ -119,6 +114,7 @@ public final class OpenLocateLocation implements JsonObjectType {
                 ", deviceInfo=" + deviceInfo +
                 ", networkInfo=" + networkInfo +
                 ", provider=" + provider +
+                ", locationContext=" + locationContext +
                 '}';
     }
 
@@ -127,12 +123,13 @@ public final class OpenLocateLocation implements JsonObjectType {
             AdvertisingIdClient.Info advertisingInfo,
             DeviceInfo deviceInfo,
             NetworkInfo networkInfo,
-            LocationProvider provider) {
+            LocationProvider provider, LocationContext locationContext) {
         this.location = new LocationInfo(location);
         this.advertisingInfo = advertisingInfo;
         this.deviceInfo = deviceInfo;
         this.networkInfo = networkInfo;
         this.provider = provider;
+        this.locationContext = locationContext;
     }
 
     OpenLocateLocation(String jsonString) {
@@ -167,7 +164,11 @@ public final class OpenLocateLocation implements JsonObjectType {
                     json.getString(Keys.CONNECTION_TYPE)
             );
 
-            provider = Enum.valueOf(LocationProvider.class,json.getString(Keys.LOCATION_METHOD));
+            provider = LocationProvider.get(json.getString(Keys.LOCATION_METHOD));
+
+            locationContext = LocationContext.get(json.getString(Keys.LOCATION_CONTEXT));
+
+
         } catch (JSONException exception) {
             exception.printStackTrace();
         }
@@ -201,7 +202,8 @@ public final class OpenLocateLocation implements JsonObjectType {
                     .put(Keys.WIFI_BSSID, networkInfo.getWifiBssid())
                     .put(Keys.CONNECTION_TYPE, networkInfo.getConnectionType())
 
-                    .put(Keys.LOCATION_METHOD, provider.toString());
+                    .put(Keys.LOCATION_METHOD, provider.toString())
+                    .put(Keys.LOCATION_CONTEXT, locationContext.toString());
         } catch (NullPointerException | JSONException e) {
             e.printStackTrace();
         }
@@ -227,7 +229,7 @@ public final class OpenLocateLocation implements JsonObjectType {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
             horizontalAccuracy = location.getAccuracy();
-            timeStamp = location.getTime();
+            timeStamp = location.getTime()/1000;
             speed = location.getSpeed();
             course = location.getBearing();
             altitude = location.getAltitude();
