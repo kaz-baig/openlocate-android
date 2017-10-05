@@ -278,7 +278,7 @@ final class LocationServiceHelper {
 
             Log.v(TAG, location.toString());
             locations.add(
-                    new OpenLocateLocation(
+                    OpenLocateLocation.from(
                             location,
                             advertisingInfo,
                             DeviceInfo.from(context),

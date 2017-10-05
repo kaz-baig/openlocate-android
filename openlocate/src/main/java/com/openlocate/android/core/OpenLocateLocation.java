@@ -120,7 +120,16 @@ public final class OpenLocateLocation implements JsonObjectType {
                 '}';
     }
 
-    OpenLocateLocation(
+    public static OpenLocateLocation from(Location location,
+                                          AdvertisingIdClient.Info advertisingInfo,
+                                          DeviceInfo deviceInfo,
+                                          NetworkInfo networkInfo,
+                                          LocationProvider provider, LocationContext locationContext) {
+        return new OpenLocateLocation(location, advertisingInfo, deviceInfo, networkInfo, provider, locationContext);
+
+    }
+
+    private OpenLocateLocation(
             Location location,
             AdvertisingIdClient.Info advertisingInfo,
             DeviceInfo deviceInfo,

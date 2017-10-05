@@ -113,7 +113,7 @@ public class OpenLocate implements OpenLocateLocationTracker {
             public void onAdvertisingInfoTaskExecute(AdvertisingIdClient.Info info) {
 
                 callback.onLocationFetch(
-                        new OpenLocateLocation(
+                        OpenLocateLocation.from(
                                 location,
                                 info,
                                 DeviceInfo.from(context),
