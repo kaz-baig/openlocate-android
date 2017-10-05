@@ -78,10 +78,6 @@ public class TrackFragment extends Fragment {
         activity = getActivity();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
-        initOpenlocate();
-    }
-
-    private void initOpenlocate() {
     }
 
     @Nullable
