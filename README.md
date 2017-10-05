@@ -36,13 +36,13 @@ OpenLocate is supported by mobile app developers, non-profit trade groups, acade
 
 Openlocation uses the following permissions:
 
-*ACCESS_COARSE_LOCATION
+* ACCESS_COARSE_LOCATION
 Required to access approximate location.
-*ACCESS_FINE_LOCATION
+* ACCESS_FINE_LOCATION
 Required to access precise location.
-*INTERNET
+* INTERNET
 Required to open network sockets.
-*ACCESS_WIFI_STATE
+* ACCESS_WIFI_STATE
 Required to access information about Wi-Fi networks.
 
 ## Installation
