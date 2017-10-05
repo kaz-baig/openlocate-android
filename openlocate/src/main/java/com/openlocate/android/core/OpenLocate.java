@@ -61,6 +61,7 @@ public class OpenLocate implements OpenLocateLocationTracker {
     private AdvertisingIdClient.Info advertisingInfo;
     private Configuration configuration;
     private HashSet<Location> locationsTemp =  new HashSet<>();
+    private boolean requestLocationUpdates = true;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -91,19 +92,21 @@ public class OpenLocate implements OpenLocateLocationTracker {
         if (sharedInstance == null) {
             sharedInstance = new OpenLocate(context);
         }
+        return sharedInstance;
+    }
 
+    public static OpenLocate getTransmitOnlyInstance(Context context) {
+        if (sharedInstance == null) {
+            sharedInstance = new OpenLocate(context);
+        }
+        sharedInstance.requestLocationUpdates = false;
         return sharedInstance;
     }
 
     @Override
-    public void init(final Configuration configuration) throws InvalidConfigurationException {
-        validateConfiguration(configuration);
-    }
+    public void startTracking(final Configuration configuration) throws InvalidConfigurationException, LocationDisabledException, LocationPermissionException {
 
-    @Override
-    public void startTracking(final Configuration configuration, final boolean requestLocationUpdates) throws InvalidConfigurationException, LocationDisabledException, LocationPermissionException {
         validateTrackingCapabilities(configuration);
-
         FetchAdvertisingInfoTask task = new FetchAdvertisingInfoTask(context, new FetchAdvertisingInfoTaskCallback() {
             @Override
             public void onAdvertisingInfoTaskExecute(AdvertisingIdClient.Info info) {
@@ -162,7 +165,7 @@ public class OpenLocate implements OpenLocateLocationTracker {
 
         boolean isRunning = ServiceUtils.isServiceRunning(LocationService.class, context);
         if(!isRunning) {
-            startTracking(configuration, Constants.DEFAULT_REQUEST_LOCATION_UPDATES);
+            startTracking(configuration);
         }
 
         if (isRunning && advertisingInfo != null)
@@ -188,7 +191,7 @@ public class OpenLocate implements OpenLocateLocationTracker {
 
         boolean isRunning = ServiceUtils.isServiceRunning(LocationService.class, context);
         if(!isRunning) {
-            startTracking(configuration, Constants.DEFAULT_REQUEST_LOCATION_UPDATES);
+            startTracking(configuration);
         }
 
         List<OpenLocateLocation> openLocateLocations = new ArrayList<>();

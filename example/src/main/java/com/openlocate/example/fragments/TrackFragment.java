@@ -82,13 +82,6 @@ public class TrackFragment extends Fragment {
     }
 
     private void initOpenlocate() {
-        configuration = new Configuration.Builder()
-                .setUrl(BuildConfig.URL)
-                .setHeaders(getHeader())
-                .build();
-
-        openLocate = OpenLocate.getInstance(activity);
-        openLocate.init(configuration);
     }
 
     @Nullable
@@ -135,13 +128,19 @@ public class TrackFragment extends Fragment {
                         public void onSuccess(Location location) {
                             // Got last known location. In some rare situations this can be null.
                             if (location != null) {
-                                openLocate.addLocation(location);
+                                try {
+                                    openLocate.addLocation(location);
+                                } catch (LocationDisabledException e) {
+                                    Log.d(TAG, "onSuccess: " + e.getLocalizedMessage());
+                                } catch (LocationPermissionException e) {
+                                    Log.d(TAG, "onSuccess: " + e.getLocalizedMessage());
+                                }
                             }
                         }
                     });
 
         } catch (SecurityException e) {
-            Log.d(TAG, "Check location permissions");
+            Log.d(TAG, "Check location settings and permissions");
             return;
         }
 
@@ -159,8 +158,13 @@ public class TrackFragment extends Fragment {
 
         try {
 
-            boolean requestLocationUpdates = true;
-            openLocate.startTracking(configuration, requestLocationUpdates);
+            Configuration configuration = new Configuration.Builder()
+                    .setUrl(BuildConfig.URL)
+                    .setHeaders(getHeader())
+                    .build();
+
+            openLocate = OpenLocate.getInstance(activity);
+            openLocate.startTracking(configuration);
 
             Toast.makeText(activity, getString(R.string.sercive_started), Toast.LENGTH_LONG).show();
             onStartService();

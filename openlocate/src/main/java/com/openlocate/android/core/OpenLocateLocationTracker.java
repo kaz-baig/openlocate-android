@@ -34,10 +34,7 @@ import java.util.List;
 
 interface OpenLocateLocationTracker {
 
-    void init(Configuration configuration)
-            throws InvalidConfigurationException;
-
-    void startTracking(Configuration configuration, boolean requestLocationUpdates)
+    void startTracking(Configuration configuration)
             throws InvalidConfigurationException,
             LocationDisabledException,
             LocationPermissionException;
