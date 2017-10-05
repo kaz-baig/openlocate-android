@@ -281,8 +281,8 @@ final class LocationServiceHelper {
                     new OpenLocateLocation(
                             location,
                             advertisingInfo,
-                            new DeviceInfo(context),
-                            new NetworkInfo(context),
+                            DeviceInfo.from(context),
+                            NetworkInfo.from(context),
                             LocationProvider.getLocationProvider(context),
                             LocationContext.getLocationContext()
                     )

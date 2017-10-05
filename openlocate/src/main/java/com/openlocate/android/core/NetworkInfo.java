@@ -33,17 +33,25 @@ final class NetworkInfo {
     private String wifiBssid;
     private String connectionType;
 
-    NetworkInfo(String carrierName, String wifiSsid, String wifiBssid, String connectionType) {
+    private NetworkInfo(String carrierName, String wifiSsid, String wifiBssid, String connectionType) {
         this.carrierName = carrierName;
         this.wifiSsid = wifiSsid;
         this.wifiBssid = wifiBssid;
         this.connectionType = connectionType;
     }
 
-    NetworkInfo(Context context) {
+    private NetworkInfo(Context context) {
         updateCarrierName(context);
         updateWifiInfo(context);
         updateConnectionType(context);
+    }
+
+    public static NetworkInfo from(Context context) {
+        return new NetworkInfo(context);
+    }
+
+    public static NetworkInfo from(String carrierName, String wifiSsid, String wifiBssid, String connectionType) {
+        return new NetworkInfo(carrierName, wifiSsid, wifiBssid, connectionType);
     }
 
     private void updateCarrierName(Context context) {

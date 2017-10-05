@@ -39,7 +39,7 @@ enum LocationProvider {
 
     static {
         for (LocationProvider provider: LocationProvider.values()) {
-                lookup.put(provider.toString(), provider);
+                lookup.put(provider.getValue(), provider);
         }
     }
 
@@ -47,10 +47,9 @@ enum LocationProvider {
         this.value = value;
     }
 
-    @Override
-    public String toString() {
-        return value;
-    }
+   String getValue() {
+       return value;
+   }
 
     public static LocationProvider get(String value) {
         return lookup.get(value);

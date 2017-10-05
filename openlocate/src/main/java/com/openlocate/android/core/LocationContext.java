@@ -19,7 +19,7 @@ public enum LocationContext {
 
     static {
         for (LocationContext context: LocationContext.values()) {
-            lookup.put(context.toString(), context);
+            lookup.put(context.getValue(), context);
         }
     }
 
@@ -27,8 +27,7 @@ public enum LocationContext {
         this.value = value;
     }
 
-    @Override
-    public String toString() {
+    String getValue() {
         return value;
     }
 
@@ -44,6 +43,6 @@ public enum LocationContext {
     }
 
     static LocationContext getLocationContext() {
-        return isForeground()?LocationContext.FGROUND:LocationContext.BGROUND;
+        return isForeground() ? LocationContext.FGROUND : LocationContext.BGROUND;
     }
 }

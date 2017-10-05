@@ -28,6 +28,8 @@ import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.TimeUnit;
+
 public final class OpenLocateLocation implements JsonObjectType {
 
     class Keys {
@@ -140,7 +142,7 @@ public final class OpenLocateLocation implements JsonObjectType {
             location.setLatitude(json.getDouble(Keys.LATITUDE));
             location.setLongitude(json.getDouble(Keys.LONGITUDE));
             location.setHorizontalAccuracy(Float.parseFloat(json.getString(Keys.HORIZONTAL_ACCURACY)));
-            location.setTimeStamp(json.getLong(Keys.TIMESTAMP));
+            location.setTimeStampSecs(json.getLong(Keys.TIMESTAMP));
             location.setAltitude(json.getDouble(Keys.ALTITUDE));
             location.setCourse(Float.parseFloat(json.getString(Keys.COURSE)));
             location.setSpeed(Float.parseFloat(json.getString(Keys.SPEED)));
@@ -150,14 +152,14 @@ public final class OpenLocateLocation implements JsonObjectType {
                     json.getBoolean(Keys.AD_OPT_OUT)
             );
 
-            deviceInfo = new DeviceInfo(
+            deviceInfo = DeviceInfo.from(
                     json.getString(Keys.DEVICE_MANUFACTURER),
                     json.getString(Keys.DEVICE_MODEL),
                     json.getString(Keys.OPERATING_SYSTEM),
                     json.getBoolean(Keys.IS_CHARGING)
             );
 
-            networkInfo = new NetworkInfo(
+            networkInfo = NetworkInfo.from(
                     json.getString(Keys.CARRIER_NAME),
                     json.getString(Keys.WIFI_SSID),
                     json.getString(Keys.WIFI_BSSID),
@@ -183,7 +185,7 @@ public final class OpenLocateLocation implements JsonObjectType {
                     .put(Keys.LATITUDE, location.getLatitude())
                     .put(Keys.LONGITUDE, location.getLongitude())
                     .put(Keys.HORIZONTAL_ACCURACY, String.valueOf(location.getHorizontalAccuracy()))
-                    .put(Keys.TIMESTAMP, location.getTimeStamp())
+                    .put(Keys.TIMESTAMP, location.getTimeStampSecs())
                     .put(Keys.COURSE, String.valueOf(location.getCourse()))
                     .put(Keys.SPEED, String.valueOf(location.getSpeed()))
                     .put(Keys.ALTITUDE, location.getAltitude())
@@ -202,8 +204,8 @@ public final class OpenLocateLocation implements JsonObjectType {
                     .put(Keys.WIFI_BSSID, networkInfo.getWifiBssid())
                     .put(Keys.CONNECTION_TYPE, networkInfo.getConnectionType())
 
-                    .put(Keys.LOCATION_METHOD, provider.toString())
-                    .put(Keys.LOCATION_CONTEXT, locationContext.toString());
+                    .put(Keys.LOCATION_METHOD, provider.getValue())
+                    .put(Keys.LOCATION_CONTEXT, locationContext.getValue());
         } catch (NullPointerException | JSONException e) {
             e.printStackTrace();
         }
@@ -216,7 +218,7 @@ public final class OpenLocateLocation implements JsonObjectType {
         private double latitude;
         private double longitude;
         private float horizontalAccuracy;
-        private long timeStamp;
+        private long timeStampSecs;
         private float speed;
         private float course;
         private double altitude;
@@ -229,7 +231,7 @@ public final class OpenLocateLocation implements JsonObjectType {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
             horizontalAccuracy = location.getAccuracy();
-            timeStamp = location.getTime()/1000;
+            timeStampSecs = TimeUnit.MILLISECONDS.toSeconds(location.getTime());
             speed = location.getSpeed();
             course = location.getBearing();
             altitude = location.getAltitude();
@@ -259,12 +261,12 @@ public final class OpenLocateLocation implements JsonObjectType {
             this.horizontalAccuracy = horizontalAccuracy;
         }
 
-        long getTimeStamp() {
-            return timeStamp;
+        long getTimeStampSecs() {
+            return timeStampSecs;
         }
 
-        void setTimeStamp(long timeStamp) {
-            this.timeStamp = timeStamp;
+        void setTimeStampSecs(long timeStampSecs) {
+            this.timeStampSecs = timeStampSecs;
         }
 
         float getSpeed() {
@@ -297,7 +299,7 @@ public final class OpenLocateLocation implements JsonObjectType {
                     "latitude=" + latitude +
                     ", longitude=" + longitude +
                     ", horizontalAccuracy=" + horizontalAccuracy +
-                    ", timeStamp=" + timeStamp +
+                    ", timeStampSecs=" + timeStampSecs +
                     ", speed=" + speed +
                     ", course=" + course +
                     ", altitude=" + altitude +

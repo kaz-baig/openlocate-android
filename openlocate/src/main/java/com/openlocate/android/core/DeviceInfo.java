@@ -35,7 +35,7 @@ final class DeviceInfo {
 
     private static final String BASE_NAME = "Android";
 
-    DeviceInfo(Context context) {
+    private DeviceInfo(Context context) {
         manufacturer = Build.MANUFACTURER;
         model = Build.MODEL;
         operatingSystem = BASE_NAME + " " + Build.VERSION.RELEASE;
@@ -47,7 +47,15 @@ final class DeviceInfo {
         isCharging = isCharging(batteryIntent);
     }
 
-    DeviceInfo(String manufacturer, String model, String operatingSystem, boolean isCharging) {
+    public static DeviceInfo from(Context context) {
+        return new DeviceInfo(context);
+    }
+
+    public static DeviceInfo from(String manufacturer, String model, String operatingSystem, boolean isCharging) {
+        return new DeviceInfo(manufacturer, model, operatingSystem, isCharging);
+    }
+
+    private DeviceInfo(String manufacturer, String model, String operatingSystem, boolean isCharging) {
         this.manufacturer = manufacturer;
         this.model = model;
         this.operatingSystem = operatingSystem;
