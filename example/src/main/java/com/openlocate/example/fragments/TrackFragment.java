@@ -126,6 +126,7 @@ public class TrackFragment extends Fragment {
                             if (location != null) {
                                 try {
                                     openLocate.addLocation(location);
+                                    Log.d(TAG, "Location added manually.");
                                 } catch (LocationDisabledException e) {
                                     Log.d(TAG, "onSuccess: " + e.getLocalizedMessage());
                                 } catch (LocationPermissionException e) {
@@ -159,7 +160,7 @@ public class TrackFragment extends Fragment {
                     .setHeaders(getHeader())
                     .build();
 
-            openLocate = OpenLocate.getInstance(activity);
+            openLocate = OpenLocate.getTransmitOnlyInstance(activity);
             openLocate.startTracking(configuration);
 
             Toast.makeText(activity, getString(R.string.sercive_started), Toast.LENGTH_LONG).show();
@@ -207,10 +208,12 @@ public class TrackFragment extends Fragment {
     private void onStartService() {
         startButton.setVisibility(View.GONE);
         stopButton.setVisibility(View.VISIBLE);
+        addButton.setVisibility(View.VISIBLE);
     }
 
     private void onStopService() {
         startButton.setVisibility(View.VISIBLE);
         stopButton.setVisibility(View.GONE);
+        addButton.setVisibility(View.INVISIBLE);
     }
 }
