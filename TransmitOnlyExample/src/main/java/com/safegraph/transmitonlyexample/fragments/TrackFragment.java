@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.openlocate.example.fragments;
+package com.safegraph.transmitonlyexample.fragments;
 
 import android.Manifest;
 import android.app.Activity;
@@ -41,15 +41,14 @@ import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.openlocate.android.callbacks.AddLocationCallback;
 import com.openlocate.android.config.Configuration;
 import com.openlocate.android.core.OpenLocate;
 import com.openlocate.android.exceptions.InvalidConfigurationException;
 import com.openlocate.android.exceptions.LocationDisabledException;
 import com.openlocate.android.exceptions.LocationPermissionException;
-import com.openlocate.example.BuildConfig;
-import com.openlocate.example.R;
-import com.openlocate.example.activities.MainActivity;
+import com.safegraph.transmitonlyexample.BuildConfig;
+import com.safegraph.transmitonlyexample.R;
+import com.safegraph.transmitonlyexample.activities.MainActivity;
 
 import java.util.HashMap;
 
@@ -126,7 +125,9 @@ public class TrackFragment extends Fragment {
                             if (location != null) {
                                 try {
                                     openLocate.addLocation(location);
+
                                     Log.d(TAG, "Location added manually.");
+                                    Toast.makeText(activity, "Location added manually", Toast.LENGTH_SHORT).show();
                                 } catch (LocationDisabledException e) {
                                     Log.d(TAG, "onSuccess: " + e.getLocalizedMessage());
                                 } catch (LocationPermissionException e) {
