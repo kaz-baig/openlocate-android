@@ -44,6 +44,7 @@ import com.google.android.gms.gcm.PeriodicTask;
 import com.google.android.gms.gcm.Task;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.openlocate.android.config.Configuration;
 
 import java.util.HashMap;
 
@@ -73,6 +74,7 @@ final class LocationServiceHelper {
     private AdvertisingIdClient.Info advertisingInfo;
 
     private Context context;
+    private Configuration configuration;
 
     LocationServiceHelper(Context context) {
         this.context = context;
@@ -158,6 +160,11 @@ final class LocationServiceHelper {
         setLocationRequestIntervalInSecs(intent);
         setTransmissionIntervalInSecs(intent);
         setLocationAccuracy(intent);
+        setFieldsConfiguration(intent);
+    }
+
+    private void setFieldsConfiguration(Intent intent) {
+        configuration = (Configuration) intent.getExtras().getParcelable(Constants.INTENT_CONFIGURATION);
     }
 
     private void setLocationRequestIntervalInSecs(Intent intent) {

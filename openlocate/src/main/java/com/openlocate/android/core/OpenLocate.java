@@ -133,12 +133,17 @@ public class OpenLocate implements OpenLocateLocationTracker {
         intent.putExtra(Constants.URL_KEY, configuration.getUrl());
         intent.putExtra(Constants.HEADER_KEY, configuration.getHeaders());
         updateLocationConfigurationInfo(intent);
+        updateFieldsConfigurationInfo(intent, configuration);
 
         if (info != null) {
             updateAdvertisingInfo(intent, info.getId(), info.isLimitAdTrackingEnabled());
         }
 
         context.startService(intent);
+    }
+
+    private void updateFieldsConfigurationInfo(Intent intent, Configuration configuration) {
+       intent.putExtra(Constants.INTENT_CONFIGURATION,configuration);
     }
 
     private void updateAdvertisingInfo(Intent intent, String advertisingId, boolean isLimitedAdTrackingEnabled) {

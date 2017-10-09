@@ -35,6 +35,7 @@ final class Constants {
     static final String LOCATION_ACCURACY_KEY = "location_accuracy";
     static final String LOCATION_INTERVAL_KEY = "location_interval";
     static final String TRANSMISSION_INTERVAL_KEY = "transmission_interval";
+    static final String INTENT_CONFIGURATION = "intent_configuration";
     static final String PROVIDER_SOURCE_ID_KEY = "provider_source_id";
     static final String USER_ID_3P = "user_id_3p";
     static final String EMAIL_ADDR = "email_addr";
