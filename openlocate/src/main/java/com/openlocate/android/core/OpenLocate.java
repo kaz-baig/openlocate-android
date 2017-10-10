@@ -50,6 +50,7 @@ public class OpenLocate implements OpenLocateLocationTracker {
     private long locationInterval = Constants.DEFAULT_LOCATION_INTERVAL_SEC;
     private long transmissionInterval = Constants.DEFAULT_TRANSMISSION_INTERVAL_SEC;
     private LocationAccuracy accuracy = Constants.DEFAULT_LOCATION_ACCURACY;
+    private Configuration configuration;
 
     private OpenLocate(Context context) {
         this.context = context;
@@ -66,6 +67,8 @@ public class OpenLocate implements OpenLocateLocationTracker {
     @Override
     public void startTracking(final Configuration configuration) throws InvalidConfigurationException, LocationDisabledException, LocationPermissionException {
         validateTrackingCapabilities(configuration);
+
+        this.configuration = configuration;
 
         FetchAdvertisingInfoTask task = new FetchAdvertisingInfoTask(context, new FetchAdvertisingInfoTaskCallback() {
             @Override
@@ -116,10 +119,11 @@ public class OpenLocate implements OpenLocateLocationTracker {
                         OpenLocateLocation.from(
                                 location,
                                 info,
-                                DeviceInfo.from(context),
-                                NetworkInfo.from(context),
-                                LocationProvider.getLocationProvider(context),
-                                LocationContext.getLocationContext()
+                                DeviceInfo.from(context, configuration),
+                                NetworkInfo.from(context, configuration),
+                                LocationProvider.getLocationProvider(context, configuration),
+                                LocationContext.getLocationContext(configuration),
+                                configuration
                         )
                 );
             }

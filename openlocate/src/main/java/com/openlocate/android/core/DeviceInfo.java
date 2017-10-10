@@ -27,15 +27,18 @@ import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Build;
 
+import com.openlocate.android.config.Configuration;
+
 final class DeviceInfo {
     private String manufacturer;
     private String model;
     private String operatingSystem;
     private boolean isCharging;
+    private Configuration configuration;
 
     private static final String BASE_NAME = "Android";
 
-    private DeviceInfo(Context context) {
+    private DeviceInfo(Context context, Configuration configuration) {
         manufacturer = Build.MANUFACTURER;
         model = Build.MODEL;
         operatingSystem = BASE_NAME + " " + Build.VERSION.RELEASE;
@@ -47,8 +50,8 @@ final class DeviceInfo {
         isCharging = isCharging(batteryIntent);
     }
 
-    public static DeviceInfo from(Context context) {
-        return new DeviceInfo(context);
+    public static DeviceInfo from(Context context, Configuration configuration) {
+        return new DeviceInfo(context, configuration);
     }
 
     public static DeviceInfo from(String manufacturer, String model, String operatingSystem, boolean isCharging) {

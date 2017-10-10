@@ -288,10 +288,11 @@ final class LocationServiceHelper {
                     OpenLocateLocation.from(
                             location,
                             advertisingInfo,
-                            DeviceInfo.from(context),
-                            NetworkInfo.from(context),
-                            LocationProvider.getLocationProvider(context),
-                            LocationContext.getLocationContext()
+                            DeviceInfo.from(context, configuration),
+                            NetworkInfo.from(context, configuration),
+                            LocationProvider.getLocationProvider(context, configuration),
+                            LocationContext.getLocationContext(configuration),
+                            configuration
                     )
             );
             Log.v(TAG, "COUNT - " + locations.size());

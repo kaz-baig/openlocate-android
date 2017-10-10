@@ -27,6 +27,8 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
 
+import com.openlocate.android.config.Configuration;
+
 final class NetworkInfo {
     private String carrierName;
     private String wifiSsid;
@@ -46,7 +48,7 @@ final class NetworkInfo {
         updateConnectionType(context);
     }
 
-    public static NetworkInfo from(Context context) {
+    public static NetworkInfo from(Context context, Configuration configuration) {
         return new NetworkInfo(context);
     }
 

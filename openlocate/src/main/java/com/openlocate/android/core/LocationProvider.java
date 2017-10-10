@@ -24,6 +24,8 @@ package com.openlocate.android.core;
 import android.content.Context;
 import android.location.LocationManager;
 
+import com.openlocate.android.config.Configuration;
+
 import java.util.HashMap;
 import java.util.Map;
 

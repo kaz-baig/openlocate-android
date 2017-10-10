@@ -24,6 +24,7 @@ package com.openlocate.android.core;
 import android.location.Location;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.openlocate.android.config.Configuration;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,6 +68,7 @@ public final class OpenLocateLocation implements JsonObjectType {
     private NetworkInfo networkInfo;
     private LocationProvider provider;
     private LocationContext locationContext;
+    private Configuration configuration;
 
     public LocationInfo getLocation() {
         return location;
@@ -124,8 +126,8 @@ public final class OpenLocateLocation implements JsonObjectType {
                                           AdvertisingIdClient.Info advertisingInfo,
                                           DeviceInfo deviceInfo,
                                           NetworkInfo networkInfo,
-                                          LocationProvider provider, LocationContext locationContext) {
-        return new OpenLocateLocation(location, advertisingInfo, deviceInfo, networkInfo, provider, locationContext);
+                                          LocationProvider provider, LocationContext locationContext, Configuration configuration) {
+        return new OpenLocateLocation(location, advertisingInfo, deviceInfo, networkInfo, provider, locationContext, configuration);
 
     }
 
@@ -134,13 +136,14 @@ public final class OpenLocateLocation implements JsonObjectType {
             AdvertisingIdClient.Info advertisingInfo,
             DeviceInfo deviceInfo,
             NetworkInfo networkInfo,
-            LocationProvider provider, LocationContext locationContext) {
+            LocationProvider provider, LocationContext locationContext, Configuration configuration) {
         this.location = new LocationInfo(location);
         this.advertisingInfo = advertisingInfo;
         this.deviceInfo = deviceInfo;
         this.networkInfo = networkInfo;
         this.provider = provider;
         this.locationContext = locationContext;
+        this.configuration = configuration;
     }
 
     OpenLocateLocation(String jsonString) {
