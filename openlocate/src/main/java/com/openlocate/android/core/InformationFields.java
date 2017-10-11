@@ -40,8 +40,11 @@ public class InformationFields {
         this.configuration = configuration;
         this.context = context;
 
-        updateDevicInfo();
-        updateCarrierName();
+        updateDeviceInfo();
+
+        if (!this.configuration.isCarrierNameCollectionDisabled()) {
+            updateCarrierName();
+        }
 
         if (!this.configuration.isWifiCollectionDisabled()) {
             updateWifiInfo();
@@ -59,7 +62,7 @@ public class InformationFields {
         }
     }
 
-    private void updateDevicInfo() {
+    private void updateDeviceInfo() {
 
         if (!configuration.isDeviceManufacturerCollectionDisabled()) {
             this.model = Build.MODEL;
@@ -74,7 +77,7 @@ public class InformationFields {
                     null,
                     new IntentFilter(Intent.ACTION_BATTERY_CHANGED)
             );
-            this.isCharging = isCharging(batteryIntent);
+            this.isCharging = isDeviceCharging(batteryIntent);
         }
     }
 
@@ -86,7 +89,7 @@ public class InformationFields {
         locationProvider = LocationProvider.getLocationProvider(context);
     }
 
-    private boolean isCharging(Intent batteryIntent) {
+    private boolean isDeviceCharging(Intent batteryIntent) {
         int status = batteryIntent.getIntExtra(BatteryManager.EXTRA_STATUS, 0);
         return status == BatteryManager.BATTERY_STATUS_CHARGING;
     }
@@ -128,4 +131,51 @@ public class InformationFields {
     }
 
 
+    public Context getContext() {
+        return context;
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public String getOperatingSystem() {
+        return operatingSystem;
+    }
+
+    public boolean isCharging() {
+        return isCharging;
+    }
+
+    public String getCarrierName() {
+        return carrierName;
+    }
+
+    public String getWifiSsid() {
+        return wifiSsid;
+    }
+
+    public String getWifiBssid() {
+        return wifiBssid;
+    }
+
+    public String getConnectionType() {
+        return connectionType;
+    }
+
+    public LocationProvider getLocationProvider() {
+        return locationProvider;
+    }
+
+    public LocationContext getLocationContext() {
+        return locationContext;
+    }
 }
