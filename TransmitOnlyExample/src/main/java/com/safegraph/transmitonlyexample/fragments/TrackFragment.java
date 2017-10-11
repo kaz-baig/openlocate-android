@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2017 OpenLocate
  *
@@ -39,6 +38,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.openlocate.android.config.Configuration;
@@ -64,8 +66,7 @@ public class TrackFragment extends Fragment {
     private OpenLocate openLocate;
 
     private FusedLocationProviderClient mFusedLocationClient;
-    private Configuration configuration;
-
+    private LocationCallback mLocationCallback;
 
     public static TrackFragment getInstance() {
         return new TrackFragment();
@@ -75,13 +76,50 @@ public class TrackFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = getActivity();
+    }
+
+    private void createLocationRequest() {
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
+        initLocationRequestCallback();
+
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        try {
+            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, null);
+        } catch (SecurityException e) {
+            ActivityCompat.requestPermissions(
+                    activity,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION
+            );
+        }
+    }
+
+    private void initLocationRequestCallback() {
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                for (Location location : locationResult.getLocations()) {
+
+                    if (OpenLocate.getTransmitOnlyInstance(activity).isTracking()) {
+                        addLocationToSDK(location);
+                        Toast.makeText(activity, "Location added manually", Toast.LENGTH_SHORT).show();
+                    }
+                    mFusedLocationClient.removeLocationUpdates(this);
+                }
+            }
+        };
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_track, null);
         startButton = (Button) view.findViewById(R.id.start_button);
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -103,47 +141,28 @@ public class TrackFragment extends Fragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addLocation();
+                createLocationRequest();
             }
         });
 
-        OpenLocate openLocate = OpenLocate.getInstance(activity);
+        OpenLocate openLocate = OpenLocate.getTransmitOnlyInstance(activity);
         if (openLocate.isTracking()) {
             onStartService();
         }
         return view;
     }
 
-    private void addLocation() {
-
-        try {
-            mFusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            // Got last known location. In some rare situations this can be null.
-                            if (location != null) {
-                                try {
-                                    openLocate.addLocation(location);
-
-                                    Log.d(TAG, "Location added manually.");
-                                    Toast.makeText(activity, "Location added manually", Toast.LENGTH_SHORT).show();
-                                } catch (LocationDisabledException e) {
-                                    Log.d(TAG, "onSuccess: " + e.getLocalizedMessage());
-                                } catch (LocationPermissionException e) {
-                                    Log.d(TAG, "onSuccess: " + e.getLocalizedMessage());
-                                }
-                            }
-                        }
-                    });
-
-        } catch (SecurityException e) {
-            Log.d(TAG, "Check location settings and permissions");
-            return;
+    private void addLocationToSDK(Location location) {
+        if (openLocate != null && OpenLocate.getTransmitOnlyInstance(activity).isTracking()) {
+            try {
+                openLocate.addLocation(location);
+                Log.d(TAG, "Location added manually.");
+            } catch (LocationDisabledException e) {
+                Log.d(TAG, "addLocationToSDK: " + e.getMessage());
+            } catch (LocationPermissionException e) {
+                Log.d(TAG, "addLocationToSDK: " + e.getMessage());
+            }
         }
-
-        onStartService();
-
     }
 
     @Override
