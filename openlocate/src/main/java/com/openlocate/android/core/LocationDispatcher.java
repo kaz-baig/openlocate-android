@@ -43,7 +43,6 @@ final class LocationDispatcher {
             return;
         }
 
-        Log.d(TAG, "postLocations: No. of Locations dispatched - " + locations.size());
         httpClient.post(
                 url,
                 getLocationsParam(locations).toString(),
