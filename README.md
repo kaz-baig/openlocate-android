@@ -49,7 +49,7 @@ repositories {
 Add the below line to your app's `build.gradle` inside the `dependencies` section:
     
 ```groovy
-compile 'com.openlocate:openlocate:0.1.8'
+compile 'com.openlocate:openlocate:0.1.10@aar'
 ```
 
 ## Usage
