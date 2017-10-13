@@ -188,7 +188,7 @@ final class LocationServiceHelper {
 
         request.setPriority(accuracy.getLocationRequestAccuracy());
         request.setInterval(locationRequestIntervalInSecs * 1000);
-        request.setFastestInterval(locationRequestIntervalInSecs * 1000);
+        request.setFastestInterval(Constants.DEFAULT_FAST_LOCATION_INTERVAL_SEC * 1000);
 
         return request;
     }
