@@ -49,9 +49,9 @@ enum LocationProvider {
         this.value = value;
     }
 
-   String getValue() {
+    String getValue() {
        return value;
-   }
+    }
 
     public static LocationProvider get(String value) {
         return lookup.get(value);

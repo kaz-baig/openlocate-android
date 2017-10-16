@@ -66,8 +66,8 @@ public class OpenLocate implements OpenLocateLocationTracker {
 
     @Override
     public void startTracking(final Configuration configuration) throws InvalidConfigurationException, LocationDisabledException, LocationPermissionException {
-        validateTrackingCapabilities(configuration);
 
+        validateTrackingCapabilities(configuration);
         this.configuration = configuration;
 
         FetchAdvertisingInfoTask task = new FetchAdvertisingInfoTask(context, new FetchAdvertisingInfoTaskCallback() {
@@ -119,8 +119,7 @@ public class OpenLocate implements OpenLocateLocationTracker {
                         OpenLocateLocation.from(
                                 location,
                                 info,
-                                InformationFields.from(context, configuration),
-                                configuration
+                                InformationFields.from(context, configuration)
                         )
                 );
             }

@@ -164,7 +164,7 @@ final class LocationServiceHelper {
     }
 
     private void setFieldsConfiguration(Intent intent) {
-        configuration = (Configuration) intent.getExtras().getParcelable(Constants.INTENT_CONFIGURATION);
+        configuration = intent.getExtras().getParcelable(Constants.INTENT_CONFIGURATION);
     }
 
     private void setLocationRequestIntervalInSecs(Intent intent) {
@@ -288,11 +288,7 @@ final class LocationServiceHelper {
                     OpenLocateLocation.from(
                             location,
                             advertisingInfo,
-                            DeviceInfo.from(context, configuration),
-                            NetworkInfo.from(context, configuration),
-                            LocationProvider.getLocationProvider(context, configuration),
-                            LocationContext.getLocationContext(configuration),
-                            configuration
+                            InformationFields.from(context, configuration)
                     )
             );
             Log.v(TAG, "COUNT - " + locations.size());

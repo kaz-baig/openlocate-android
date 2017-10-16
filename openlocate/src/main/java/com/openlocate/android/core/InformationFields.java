@@ -14,7 +14,7 @@ import com.openlocate.android.config.Configuration;
 
 public class InformationFields {
 
-    private final Context context;
+    private Context context;
     private Configuration configuration;
 
     private String manufacturer;
@@ -30,6 +30,25 @@ public class InformationFields {
     private LocationContext locationContext;
 
     private static final String BASE_NAME = "Android";
+
+    private InformationFields(String deviceManufacturer, String deviceModel,
+                             String chargingState, String operatingSystem,
+                             String carrierName, String wifiSSID,
+                             String wifiBSSID, String connectionType,
+                             String locationMethod, String locationContext) {
+
+            this.manufacturer = deviceManufacturer;
+            this.model = deviceModel;
+            this.operatingSystem = operatingSystem;
+            this.isCharging = Boolean.valueOf(chargingState);
+            this.carrierName = carrierName;
+            this.wifiSsid = wifiSSID;
+            this.wifiBssid = wifiBSSID;
+            this.connectionType = connectionType;
+            this.locationProvider = LocationProvider.get(locationMethod);
+            this.locationContext = LocationContext.get(locationContext);
+
+    }
 
     public static InformationFields from(Context context, Configuration configuration) {
         return new InformationFields(context, configuration);
@@ -65,6 +84,10 @@ public class InformationFields {
     private void updateDeviceInfo() {
 
         if (!configuration.isDeviceManufacturerCollectionDisabled()) {
+            this.manufacturer = Build.MANUFACTURER;
+        }
+
+        if (!configuration.isDeviceModelCollectionDisabled()) {
             this.model = Build.MODEL;
         }
 
@@ -177,5 +200,36 @@ public class InformationFields {
 
     public LocationContext getLocationContext() {
         return locationContext;
+    }
+
+    public static InformationFields from(String deviceManufacturer,
+                                         String deviceModel,
+                                         String chargingState,
+                                         String operatingSystem,
+                                         String carrierName,
+                                         String wifiSSID,
+                                         String wifiBSSID,
+                                         String connectionType,
+                                         String locationMethod,
+                                         String locationContext) {
+        return new InformationFields(deviceManufacturer, deviceModel, chargingState, operatingSystem, carrierName, wifiSSID, wifiBSSID, connectionType, locationMethod, locationContext);
+    }
+
+    @Override
+    public String toString() {
+        return "InformationFields{" +
+                "context=" + context +
+                ", configuration=" + configuration +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", model='" + model + '\'' +
+                ", operatingSystem='" + operatingSystem + '\'' +
+                ", isCharging=" + isCharging +
+                ", carrierName='" + carrierName + '\'' +
+                ", wifiSsid='" + wifiSsid + '\'' +
+                ", wifiBssid='" + wifiBssid + '\'' +
+                ", connectionType='" + connectionType + '\'' +
+                ", locationProvider=" + locationProvider +
+                ", locationContext=" + locationContext +
+                '}';
     }
 }

@@ -21,6 +21,7 @@
  */
 package com.openlocate.android.config;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
