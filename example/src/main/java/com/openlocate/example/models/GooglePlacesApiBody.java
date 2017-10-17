@@ -26,12 +26,12 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SafeGraphPlaceBody {
+public class GooglePlacesApiBody {
 
     @SerializedName("places")
-    private List<SafeGraphPlace> placeList = new ArrayList<>();
+    private List<GooglePlace> placeList = new ArrayList<>();
 
-    public List<SafeGraphPlace> getPlaceList() {
+    public List<GooglePlace> getPlaceList() {
         return placeList;
     }
 }

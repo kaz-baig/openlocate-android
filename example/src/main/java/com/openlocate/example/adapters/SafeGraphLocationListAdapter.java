@@ -28,15 +28,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.openlocate.example.R;
-import com.openlocate.example.models.SafeGraphPlace;
+import com.openlocate.example.models.GooglePlace;
 
 import java.util.List;
 
 public class SafeGraphLocationListAdapter extends RecyclerView.Adapter<SafeGraphLocationListAdapter.SafeGraphLocationViewHolder> {
 
-    private List<SafeGraphPlace> places;
+    private List<GooglePlace> places;
 
-    public SafeGraphLocationListAdapter(List<SafeGraphPlace> places) {
+    public SafeGraphLocationListAdapter(List<GooglePlace> places) {
         this.places = places;
     }
 
@@ -81,7 +81,7 @@ public class SafeGraphLocationListAdapter extends RecyclerView.Adapter<SafeGraph
             this.distance = (TextView) itemView.findViewById(R.id.txt_distance);
         }
 
-        private void update(SafeGraphPlace place) {
+        private void update(GooglePlace place) {
             name.setText(place.getName());
             streetAddress.setText(place.getStreetAddress());
             city.setText(place.getCity());
