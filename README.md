@@ -114,6 +114,74 @@ The following fields are collected by the SDK to be sent to a private or public 
 6. `ad_id` - Advertising identifier
 7. `ad_opt_out` - Limited ad tracking enabled flag
 
+### Use user location to query 3rd party Places APIs
+
+To use user location, obtain the location by calling `getCurrentLocation` method on OpenLocate. Get the instance by calling `getInstance`. Use the fields collected by SDK to send to 3rd party APIs.
+
+#### For example, to obtain user location:
+
+```java
+OpenLocate openLocate = OpenLocate.getInstance(activity);
+
+openLocate.getCurrentLocation(new OpenLocateLocationCallback() {
+    @Override
+    public void onLocationFetch(OpenLocateLocation location) {
+        //Use location object to obtain fields and pass it to 3rd Party API
+    }
+
+    @Override
+    public void onError(Error error) {
+       //error
+    }
+});
+```
+
+#### For example, to query Google Places API using location:
+
+```java
+ private Map<String, String> getQueryMap(OpenLocateLocation location ) {
+
+        Map<String, String> queryMap = new HashMap<>();
+
+        queryMap.put("advertising_id", location.getAdvertisingInfo().getId());
+        queryMap.put("advertising_id_type", "aaid");
+        queryMap.put("latitude", String.valueOf(location.getLocation().getLatitude()));
+        queryMap.put("longitude", String.valueOf(location.getLocation().getLongitude()));
+        queryMap.put("horizontal_accuracy", String.valueOf(location.getLocation().getHorizontalAccuracy()));
+
+        return queryMap;
+ }
+
+ private void fetchNearByPlaces() {
+
+        GooglePlacesApiClient googlePlacesApiClient = ClientGenerator.createClient(GooglePlacesApiClient.class);
+        Call<GooglePlaceBody> call = googlePlacesApiClient.getAllPlaces(getQueryMap(openLocateLocation));
+
+        call.enqueue(new Callback<GooglePlaceBody>() {
+               @Override
+               public void onResponse(Call<GooglePlaceBody> call, Response<GooglePlaceBody> response) {
+                   if(response.isSuccessful()) {
+
+                       List<GooglePlace> places = response.body().getPlaceList();
+                       //TODO Do something with places
+
+                   }
+               }
+
+               @Override
+               public void onFailure(Call<SafeGraphPlaceBody> call, Throwable t) {
+                        //error
+               }
+        });
+ }
+```
+
+#### For example, to query Safegraph Places API using location:
+
+```java
+
+```
+
 ## Communication
 
 - If you **need help**, post a question to the [discussion forum](https://groups.google.com/a/openlocate.org/d/forum/openlocate), or tag a question with 'OpenLocate' on [Stack Overflow](https://stackoverflow.com).
