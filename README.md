@@ -114,9 +114,9 @@ The following fields are collected by the SDK to be sent to a private or public 
 6. `ad_id` - Advertising identifier
 7. `ad_opt_out` - Limited ad tracking enabled flag
 
-### Use user location to query 3rd party Places APIs
+### Using user's location to query 3rd party Places APIs
 
-To use user location, obtain the location by calling `getCurrentLocation` method on OpenLocate. Get the instance by calling `getInstance`. Use the fields collected by SDK to send to 3rd party APIs.
+To use user's current location, obtain the location by calling `getCurrentLocation` method on OpenLocate. Get the instance by calling `getInstance`. Use the fields collected by SDK to send to 3rd party APIs.
 
 #### For example, to obtain user location:
 
