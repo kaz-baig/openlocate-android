@@ -141,7 +141,17 @@ openLocate.getCurrentLocation(new OpenLocateLocationCallback() {
 Google Places API: https://developers.google.com/places/web-service/search
 
 ```java
- private Map<String, String> getQueryMap(OpenLocateLocation location ) {
+
+
+```
+
+#### For example, to query Safegraph Places API using location:
+
+SafeGraph Places API: https://developers.safegraph.com/docs/places.html
+
+```java
+
+private Map<String, String> getQueryMap(OpenLocateLocation location ) {
 
         Map<String, String> queryMap = new HashMap<>();
 
@@ -156,33 +166,25 @@ Google Places API: https://developers.google.com/places/web-service/search
 
  private void fetchNearByPlaces() {
 
-        GooglePlacesApiClient googlePlacesApiClient = ClientGenerator.createClient(GooglePlacesApiClient.class);
-        Call<GooglePlaceBody> call = googlePlacesApiClient.getAllPlaces(getQueryMap(openLocateLocation));
+     SafeGraphPlaceClient safeGraphPlaceClient = ClientGenerator.createClient(SafeGraphPlaceClient.class);
+     Call<SafeGraphPlaceBody> call=safeGraphPlaceClient.getAllPlaces(getQueryMap(openLocateLocation));
 
-        call.enqueue(new Callback<GooglePlaceBody>() {
-               @Override
-               public void onResponse(Call<GooglePlaceBody> call, Response<GooglePlaceBody> response) {
-                   if(response.isSuccessful()) {
+     call.enqueue(new Callback<SafeGraphPlaceBody>() {
+         @Override
+         public void onResponse(Call<SafeGraphPlaceBody> call, Response<SafeGraphPlaceBody> response) {
 
-                       List<GooglePlace> places = response.body().getPlaceList();
-                       //TODO Do something with places
+             if(response.isSuccessful()) {
+                 List<SafeGraphPlace> places = response.body().getPlaceList();
+                 //TODO Do something with place.
+             }
+         }
 
-                   }
-               }
-
-               @Override
-               public void onFailure(Call<GooglePlaceBody> call, Throwable t) {
-                        //error
-               }
-        });
+         @Override
+         public void onFailure(Call<SafeGraphPlaceBody> call, Throwable t) {
+             //error
+         }
+     });
  }
-```
-
-#### For example, to query Safegraph Places API using location:
-
-SafeGraph Places API: https://developers.safegraph.com/docs/places.html
-
-```java
 
 ```
 
