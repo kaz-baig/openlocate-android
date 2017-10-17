@@ -111,45 +111,55 @@ public final class OpenLocateLocation implements JsonObjectType {
             location.setSpeed(Float.parseFloat(json.getString(Keys.SPEED)));
 
             String deviceManufacturer = "";
-            if (json.has(Keys.DEVICE_MANUFACTURER))
-                 deviceManufacturer = json.getString(Keys.DEVICE_MANUFACTURER);
+            if (json.has(Keys.DEVICE_MANUFACTURER)) {
+                deviceManufacturer = json.getString(Keys.DEVICE_MANUFACTURER);
+            }
 
 
             String deviceModel = "";
-            if (json.has(Keys.DEVICE_MODEL))
+            if (json.has(Keys.DEVICE_MODEL)) {
                 deviceModel = json.getString(Keys.DEVICE_MODEL);
+            }
 
             String chargingState = "";
-            if (json.has(Keys.IS_CHARGING))
+            if (json.has(Keys.IS_CHARGING)) {
                 chargingState = json.getString(Keys.IS_CHARGING);
+            }
 
             String operatingSystem = "";
-            if (json.has(Keys.OPERATING_SYSTEM))
+            if (json.has(Keys.OPERATING_SYSTEM)) {
                 operatingSystem = json.getString(Keys.OPERATING_SYSTEM);
+            }
 
             String carrierName = "";
-            if (json.has(Keys.CARRIER_NAME))
+            if (json.has(Keys.CARRIER_NAME)) {
                 carrierName = json.getString(Keys.CARRIER_NAME);
+            }
 
             String wifiSSID = "";
-            if (json.has(Keys.WIFI_SSID))
+            if (json.has(Keys.WIFI_SSID)) {
                 wifiSSID = json.getString(Keys.WIFI_SSID);
+            }
 
             String wifiBSSID = "";
-            if (json.has(Keys.WIFI_BSSID))
+            if (json.has(Keys.WIFI_BSSID)) {
                 wifiBSSID = json.getString(Keys.WIFI_BSSID);
+            }
 
             String connectionType = "";
-            if (json.has(Keys.CONNECTION_TYPE))
-                connectionType =json.getString(Keys.CONNECTION_TYPE);
+            if (json.has(Keys.CONNECTION_TYPE)) {
+                connectionType = json.getString(Keys.CONNECTION_TYPE);
+            }
 
             String locationMethod = "";
-            if (json.has(Keys.LOCATION_METHOD))
+            if (json.has(Keys.LOCATION_METHOD)) {
                 locationMethod = json.getString(Keys.LOCATION_METHOD);
+            }
 
             String locationContext = "";
-            if (json.has(Keys.LOCATION_CONTEXT))
+            if (json.has(Keys.LOCATION_CONTEXT)) {
                 locationContext = json.getString(Keys.LOCATION_CONTEXT);
+            }
 
             informationFields = InformationFields.from(deviceManufacturer, deviceModel, chargingState, operatingSystem, carrierName, wifiSSID, wifiBSSID, connectionType, locationMethod, locationContext);
 
