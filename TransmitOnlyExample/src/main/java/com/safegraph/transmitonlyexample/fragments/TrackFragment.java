@@ -80,24 +80,32 @@ public class TrackFragment extends Fragment {
 
     private void createLocationRequest() {
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        if (openLocate != null && openLocate.isTracking()) {
 
-        initLocationRequestCallback();
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+            initLocationRequestCallback();
+
+            try {
+                mFusedLocationClient.requestLocationUpdates(getLocationRequest(), mLocationCallback, null);
+            } catch (SecurityException e) {
+                ActivityCompat.requestPermissions(
+                        activity,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                        LOCATION_PERMISSION
+                );
+            }
+        } else {
+            Toast.makeText(getActivity(), "Please try again.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private LocationRequest getLocationRequest() {
 
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        try {
-            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, null);
-        } catch (SecurityException e) {
-            ActivityCompat.requestPermissions(
-                    activity,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_PERMISSION
-            );
-        }
+        return mLocationRequest;
     }
 
     private void initLocationRequestCallback() {
