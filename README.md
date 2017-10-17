@@ -138,6 +138,8 @@ openLocate.getCurrentLocation(new OpenLocateLocationCallback() {
 
 #### For example, to query Google Places API using location:
 
+Google Places API: https://developers.google.com/places/web-service/search
+
 ```java
  private Map<String, String> getQueryMap(OpenLocateLocation location ) {
 
@@ -177,6 +179,8 @@ openLocate.getCurrentLocation(new OpenLocateLocationCallback() {
 ```
 
 #### For example, to query Safegraph Places API using location:
+
+SafeGraph Places API: https://developers.safegraph.com/docs/places.html
 
 ```java
 
