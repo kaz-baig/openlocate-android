@@ -151,31 +151,28 @@ SafeGraph Places API: https://developers.safegraph.com/docs/places.html
 
 ```java
 
-private Map<String, String> getQueryMap(OpenLocateLocation location ) {
-
+private Map<String, String> getQueryMap(OpenLocateLocation location) {
         Map<String, String> queryMap = new HashMap<>();
-
         queryMap.put("advertising_id", location.getAdvertisingInfo().getId());
         queryMap.put("advertising_id_type", "aaid");
         queryMap.put("latitude", String.valueOf(location.getLocation().getLatitude()));
         queryMap.put("longitude", String.valueOf(location.getLocation().getLongitude()));
         queryMap.put("horizontal_accuracy", String.valueOf(location.getLocation().getHorizontalAccuracy()));
-
         return queryMap;
  }
 
- private void fetchNearByPlaces() {
-
+ private void fetchNearbyPlaces() {
+    // These classes can be found in the example app in this repo
      SafeGraphPlaceClient safeGraphPlaceClient = ClientGenerator.createClient(SafeGraphPlaceClient.class);
-     Call<SafeGraphPlaceBody> call=safeGraphPlaceClient.getAllPlaces(getQueryMap(openLocateLocation));
+     Call<SafeGraphPlaceBody> call = safeGraphPlaceClient.getAllPlaces(getQueryMap(openLocateLocation));
 
      call.enqueue(new Callback<SafeGraphPlaceBody>() {
          @Override
          public void onResponse(Call<SafeGraphPlaceBody> call, Response<SafeGraphPlaceBody> response) {
 
-             if(response.isSuccessful()) {
+             if (response.isSuccessful()) {
                  List<SafeGraphPlace> places = response.body().getPlaceList();
-                 //TODO Do something with place.
+                 //TODO Do something with places
              }
          }
 
