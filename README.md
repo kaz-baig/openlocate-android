@@ -171,7 +171,7 @@ Google Places API: https://developers.google.com/places/web-service/search
                }
 
                @Override
-               public void onFailure(Call<SafeGraphPlaceBody> call, Throwable t) {
+               public void onFailure(Call<GooglePlaceBody> call, Throwable t) {
                         //error
                }
         });
