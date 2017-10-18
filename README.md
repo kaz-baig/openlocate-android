@@ -113,6 +113,43 @@ The following fields are collected by the SDK to be sent to a private or public 
 5. `id_type` - 'aaid' for identifying android advertising type
 6. `ad_id` - Advertising identifier
 7. `ad_opt_out` - Flag that indicates whether user has enabled "[limit ad tracking](https://developers.google.com/android/reference/com/google/android/gms/ads/identifier/AdvertisingIdClient.Info#isLimitAdTrackingEnabled())" (1: enabled; 0: not enabled)
+8. `course` - Bearing in degrees.
+9. `speed` - Speed in meters/second over ground.
+10. `altitude` - Altitude in meters above the WGS 84 reference ellipsoid.
+
+##### (Optional)
+
+11. `is_charging` - Indicates whether phone is charging or not
+12. `device_manufacturer` - Manufacturer of device
+13. `device_model` - Model of devise
+14. `os` - Operating system installed on Device.
+15. `location_method` - Method of location collected i.e "wifi", "cellular", "fused", "gps"
+16. `location_context` -  Indicates whether the location was collected when the application was foregrounded or backgrounded on the device.
+17. `carrier_name` - Name of the mobile network carrier
+18. `connection_type` - Collects devices's network connection type
+19. `wifi_ssid` - Collects wifi_ssid
+20. `wifi_bssid` - Collects wifi_bssid
+
+### Configuring fields for collection
+
+Optional field collection can be disabled while building the configuration object before passing it to the `startTracking` method.
+
+#### For example
+```java
+Configuration configuration = new Configuration.Builder()
+                    .setUrl(BuildConfig.URL)
+                    .setHeaders(getHeader())
+                    .withoutDeviceManufacturer()
+                    .withoutDeviceModel()
+                    .withoutChargingInfo()
+                    .withoutOperatingSystem()
+                    .withoutCarrierName()
+                    .withoutConnectionType()
+                    .withoutWifiInfo()
+                    .withoutLocationMethod()
+                    .withoutLocationContext()
+                    .build();
+```
 
 ### Using user's location to query 3rd party Places APIs
 
@@ -228,42 +265,48 @@ This is a sample request body sent by the SDK.
 ```json
 [
   {
-    "ad_id": "12a451dd-3539-4092-b134-8cb0ef62ab8a",
-    "ad_opt_out": true,
-    "id_type": "idfa",
-    "latitude": "37.773972",
-    "longitude": "-122.431297",
-    "utc_timestamp": "1508356559",
-    "horizontal_accuracy": 12.323,
-    "vertical_accuracy": 5.3,
-    "altitude": 0.456,
-    "wifi_ssid": "OpenLocate_Guest",
-    "wifi_bssid": "OpenLocate_Guest",
-    "location_context": "regular",
-    "course": 175.0,
-    "speed": 11.032,
+    "latitude": 37.773972,
+    "longitude": -122.431297,
+    "horizontal_accuracy": "23.670000076293945",
+    "utc_timestamp": 1508369672,
+    "course": "0.0",
+    "speed": "0.0",
+    "altitude": 0,
+    "ad_id": "f109e57e-a02e-41d3-b7c4-c906d1b92331",
+    "ad_opt_out": false,
+    "id_type": "aaid",
+    "device_manufacturer": "motorola",
+    "device_model": "Moto G (5S) Plus",
     "is_charging": true,
-    "device_model": "iPhone 7",
-    "os_version": "iOS 11.0.3"
+    "os_version": "Android 7.1.1",
+    "carrier_name": "T Mobile",
+    "wifi_ssid": "\"Jungle\"",
+    "wifi_bssid": "10:fe:ed:8d:b5:7c",
+    "connection_type": "wifi",
+    "location_method": "gps",
+    "location_context": "bground"
   },
   {
-    "ad_id": "12a451dd-3539-4092-b134-8cb0ef62ab8a",
-    "ad_opt_out": true,
-    "id_type": "idfa",
-    "latitude": "37.773972",
-    "longitude": "-122.431297",
-    "utc_timestamp": "1508356559",
-    "horizontal_accuracy": 12.323,
-    "vertical_accuracy": 5.3,
-    "altitude": 0.456,
-    "wifi_ssid": "OpenLocate_Guest",
-    "wifi_bssid": "OpenLocate_Guest",
-    "location_context": "regular",
-    "course": 175.0,
-    "speed": 11.032,
+    "latitude": 37.773972,
+    "longitude": -122.431297,
+    "horizontal_accuracy": "23.670000076293945",
+    "utc_timestamp": 1508369683,
+    "course": "0.0",
+    "speed": "0.0",
+    "altitude": 0,
+    "ad_id": "f109e57e-a02e-41d3-b7c4-c906d1b92331",
+    "ad_opt_out": false,
+    "id_type": "aaid",
+    "device_manufacturer": "motorola",
+    "device_model": "Moto G (5S) Plus",
     "is_charging": true,
-    "device_model": "iPhone 7",
-    "os_version": "iOS 11.0.3"
+    "os_version": "Android 7.1.1",
+    "carrier_name": "T Mobile",
+    "wifi_ssid": "\"Jungle\"",
+    "wifi_bssid": "10:fe:ed:8d:b5:7c",
+    "connection_type": "wifi",
+    "location_method": "gps",
+    "location_context": "bground"
   }
 ]
 ```
