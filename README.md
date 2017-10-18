@@ -142,6 +142,37 @@ Google Places API: https://developers.google.com/places/web-service/search
 
 ```java
 
+private Map<String, String> getQueryMapGoogle(OpenLocateLocation location ) {
+        Map<String, String> queryMap = new HashMap<>();
+
+        queryMap.put("location", String.valueOf(location.getLocation().getLatitude()) + "," + String.valueOf(location.getLocation().getLongitude()) );
+        queryMap.put("radius", "500");
+        queryMap.put("type", "restaurant");
+        queryMap.put("keyword", "south");
+        queryMap.put("key", -YOUR GOOGLE PLACES API KEY-);
+
+        return queryMap;
+    }
+
+    public void fetchGooglePlaces(OpenLocateLocation openLocateLocation, final SafeGraphPlaceCallback callback) {
+
+        GooglePlaceClient safeGraphPlaceClient = GooglePlaceClientGenerator.createClient(GooglePlaceClient.class);
+        Call<GooglePlaceBody> call=safeGraphPlaceClient.getNearByPlaces(getQueryMapGoogle(openLocateLocation));
+
+        call.enqueue(new Callback<GooglePlaceBody>() {
+            @Override
+            public void onResponse(Call<GooglePlaceBody> call, Response<GooglePlaceBody> response) {
+                if(response.isSuccessful()) {
+                     //TODO Do something with place.
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GooglePlaceBody> call, Throwable t) {
+                    //Error
+            }
+        });
+    }
 
 ```
 
@@ -187,6 +218,14 @@ private Map<String, String> getQueryMap(OpenLocateLocation location ) {
  }
 
 ```
+
+Similarly, OpenLocate SDK can be used to query additional APIs such as Facebook Places Graph or any other 3rd party places API.
+
+- Facebook Places API - https://developers.facebook.com/docs/places/
+
+#### Note
+
+ClientGenerator is created using Retrofit and its implementation code can found in example code.
 
 ## Communication
 
