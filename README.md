@@ -1,9 +1,7 @@
 
 ![OpenLocate](http://imageshack.com/a/img922/4800/Pihgqn.png)
 
-# OpenLocate
-
-OpenLocate is an open source Android and iOS SDK for mobile location collection.
+We’re building an open SDK to collect location data (like GPS) from phones, for apps like yours
 
 ## Purpose
 
@@ -32,6 +30,15 @@ OpenLocate is supported by mobile app developers, non-profit trade groups, acade
 
 - Android - Min SDK version 19
 
+## Permissions
+
+Openlocate uses the following permissions:
+
+* ACCESS_COARSE_LOCATION - Required to access approximate location.
+* ACCESS_FINE_LOCATION - Required to access precise location.
+* INTERNET - Required to open network sockets.
+* ACCESS_WIFI_STATE - Required to access information about Wi-Fi networks.
+
 ## Installation
 
 ### Adding to your project
@@ -49,7 +56,7 @@ repositories {
 Add the below line to your app's `build.gradle` inside the `dependencies` section:
     
 ```groovy
-compile 'com.openlocate:openlocate:0.1.8'
+compile 'com.openlocate:openlocate:0.1.10@aar'
 ```
 
 ## Usage
@@ -109,7 +116,7 @@ The following fields are collected by the SDK to be sent to a private or public 
 
 ## Communication
 
-- If you **need help**, use [Stack Overflow](https://stackoverflow.com). (Tag 'OpenLocate') 
+- If you **need help**, post a question to the [discussion forum](https://groups.google.com/a/openlocate.org/d/forum/openlocate), or tag a question with 'OpenLocate' on [Stack Overflow](https://stackoverflow.com).
 - If you **found a bug**, open an issue.
 - If you **have a feature request**, open an issue.
 - If you **want to contribute**, submit a pull request.

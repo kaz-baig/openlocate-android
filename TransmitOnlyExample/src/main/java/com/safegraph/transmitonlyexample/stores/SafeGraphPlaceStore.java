@@ -78,11 +78,11 @@ public class SafeGraphPlaceStore {
     private Map<String, String> getQueryMap(OpenLocateLocation location ) {
         Map<String, String> queryMap = new HashMap<>();
 
-        queryMap.put("advertising_id", location.getAdvertisingId());
+        queryMap.put("advertising_id", location.getAdvertisingInfo().getId());
         queryMap.put("advertising_id_type", "aaid");
-        queryMap.put("latitude", String.valueOf(location.getLatitude()));
-        queryMap.put("longitude", String.valueOf(location.getLongitude()));
-        queryMap.put("horizontal_accuracy", String.valueOf(location.getHorizontalAccuracy()));
+        queryMap.put("latitude", String.valueOf(location.getLocation().getLatitude()));
+        queryMap.put("longitude", String.valueOf(location.getLocation().getLongitude()));
+        queryMap.put("horizontal_accuracy", String.valueOf(location.getLocation().getHorizontalAccuracy()));
 
         return queryMap;
     }

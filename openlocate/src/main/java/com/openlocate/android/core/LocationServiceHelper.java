@@ -21,6 +21,7 @@
  */
 package com.openlocate.android.core;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -33,6 +34,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.ConnectionResult;
@@ -44,6 +46,9 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.HashMap;
+
+import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
+import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
 
 final class LocationServiceHelper {
 
@@ -195,7 +200,7 @@ final class LocationServiceHelper {
 
         request.setPriority(accuracy.getLocationRequestAccuracy());
         request.setInterval(locationRequestIntervalInSecs * 1000);
-        request.setFastestInterval(locationRequestIntervalInSecs * 1000);
+        request.setFastestInterval(Constants.DEFAULT_FAST_LOCATION_INTERVAL_SEC * 1000);
 
         return request;
     }
@@ -282,9 +287,20 @@ final class LocationServiceHelper {
 
         @Override
         public void onLocationChanged(Location location) {
+
             Log.v(TAG, location.toString());
-            locations.add(new OpenLocateLocation(location, advertisingInfo));
+            locations.add(
+                    OpenLocateLocation.from(
+                            location,
+                            advertisingInfo,
+                            DeviceInfo.from(context),
+                            NetworkInfo.from(context),
+                            LocationProvider.getLocationProvider(context),
+                            LocationContext.getLocationContext()
+                    )
+            );
             Log.v(TAG, "COUNT - " + locations.size());
+
         }
     }
 

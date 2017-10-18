@@ -44,6 +44,7 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.openlocate.android.config.Configuration;
 import com.openlocate.android.core.OpenLocate;
+import com.openlocate.android.exceptions.GooglePlayServicesNotAvailable;
 import com.openlocate.android.exceptions.InvalidConfigurationException;
 import com.openlocate.android.exceptions.LocationDisabledException;
 import com.openlocate.android.exceptions.LocationPermissionException;
@@ -168,6 +169,8 @@ public class TrackFragment extends Fragment {
                 Log.d(TAG, "addLocationToSDK: " + e.getMessage());
             } catch (LocationPermissionException e) {
                 Log.d(TAG, "addLocationToSDK: " + e.getMessage());
+            } catch (GooglePlayServicesNotAvailable e) {
+                Log.d(TAG, "addLocationToSDK: " + e.getMessage());
             }
         }
     }
@@ -201,6 +204,8 @@ public class TrackFragment extends Fragment {
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_PERMISSION
             );
+        } catch (GooglePlayServicesNotAvailable e) {
+            Log.e(TAG, "Google Play Services not available ", e);
         }
     }
 

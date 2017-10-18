@@ -21,19 +21,55 @@
  */
 package com.openlocate.android.core;
 
+import android.content.Context;
+import android.location.LocationManager;
+
+import java.util.HashMap;
+import java.util.Map;
+
 enum LocationProvider {
     GPS("gps"),
     NETWORK("network"),
-    PASSIVE("passive");
+    PASSIVE("passive"),
+    DISABLED("disabled");
 
     private final String value;
+
+    private static final Map<String, LocationProvider>  lookup  = new HashMap<>();
+
+    static {
+        for (LocationProvider provider: LocationProvider.values()) {
+                lookup.put(provider.getValue(), provider);
+        }
+    }
 
     LocationProvider(final String value) {
         this.value = value;
     }
 
-    @Override
-    public String toString() {
-        return value;
+   String getValue() {
+       return value;
+   }
+
+    public static LocationProvider get(String value) {
+        return lookup.get(value);
+    }
+
+    static LocationProvider getLocationProvider(Context context) {
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            return GPS;
+        }
+
+        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            return NETWORK;
+        }
+
+        if (locationManager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
+            return PASSIVE;
+        }
+
+        return DISABLED;
     }
 }
