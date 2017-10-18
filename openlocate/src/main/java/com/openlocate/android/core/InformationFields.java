@@ -12,24 +12,19 @@ import android.telephony.TelephonyManager;
 
 import com.openlocate.android.config.Configuration;
 
-public class InformationFields {
+final class InformationFields {
 
-    private Context context;
-    private Configuration configuration;
+    private final String manufacturer;
+    private final String model;
+    private final String operatingSystem;
+    private final String isCharging;
 
-    private String manufacturer;
-    private String model;
-    private String operatingSystem;
-    private boolean isCharging;
-
-    private String carrierName;
-    private String wifiSsid;
-    private String wifiBssid;
-    private String connectionType;
-    private LocationProvider locationProvider;
-    private LocationContext locationContext;
-
-    private static final String BASE_NAME = "Android";
+    private final String carrierName;
+    private final String wifiSsid;
+    private final String wifiBssid;
+    private final String connectionType;
+    private final LocationProvider locationProvider;
+    private final LocationContext locationContext;
 
     private InformationFields(String deviceManufacturer, String deviceModel,
                              String chargingState, String operatingSystem,
@@ -40,7 +35,7 @@ public class InformationFields {
             this.manufacturer = deviceManufacturer;
             this.model = deviceModel;
             this.operatingSystem = operatingSystem;
-            this.isCharging = Boolean.valueOf(chargingState);
+            this.isCharging = chargingState;
             this.carrierName = carrierName;
             this.wifiSsid = wifiSSID;
             this.wifiBssid = wifiBSSID;
@@ -48,118 +43,6 @@ public class InformationFields {
             this.locationProvider = LocationProvider.get(locationMethod);
             this.locationContext = LocationContext.get(locationContext);
 
-    }
-
-    public static InformationFields from(Context context, Configuration configuration) {
-        return new InformationFields(context, configuration);
-    }
-
-    private InformationFields(Context context, Configuration configuration) {
-
-        this.configuration = configuration;
-        this.context = context;
-
-        updateDeviceInfo();
-
-        if (!this.configuration.isCarrierNameCollectionDisabled()) {
-            updateCarrierName();
-        }
-
-        if (!this.configuration.isWifiCollectionDisabled()) {
-            updateWifiInfo();
-        }
-
-        if (!this.configuration.isConnectionTypeCollectionDisabled()) {
-            updateConnectionType();
-        }
-
-        if (!this.configuration.isLocationMethodCollectionDisabled()) {
-            updateLocationProvider();
-        }
-        if (!this.configuration.isLocationContextCollectionDisabled()) {
-            updateLocationContext();
-        }
-    }
-
-    private void updateDeviceInfo() {
-
-        if (!configuration.isDeviceManufacturerCollectionDisabled()) {
-            this.manufacturer = Build.MANUFACTURER;
-        }
-
-        if (!configuration.isDeviceModelCollectionDisabled()) {
-            this.model = Build.MODEL;
-        }
-
-        if (!configuration.isOperaringSystemCollectionDisbaled()) {
-            this.operatingSystem = BASE_NAME + " " + Build.VERSION.RELEASE;
-        }
-
-        if (!configuration.isChargingInfoCollectionDisabled()) {
-            Intent batteryIntent = context.registerReceiver(
-                    null,
-                    new IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-            );
-            this.isCharging = isDeviceCharging(batteryIntent);
-        }
-    }
-
-    private void updateLocationContext() {
-        locationContext = LocationContext.getLocationContext();
-    }
-
-    private void updateLocationProvider() {
-        locationProvider = LocationProvider.getLocationProvider(context);
-    }
-
-    private boolean isDeviceCharging(Intent batteryIntent) {
-        int status = batteryIntent.getIntExtra(BatteryManager.EXTRA_STATUS, 0);
-        return status == BatteryManager.BATTERY_STATUS_CHARGING;
-    }
-
-    private void updateCarrierName() {
-        TelephonyManager telephonyManager = (TelephonyManager) context.getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
-        carrierName = telephonyManager.getNetworkOperatorName();
-    }
-
-    private void updateWifiInfo() {
-        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-
-        wifiSsid = wifiInfo.getSSID();
-        wifiBssid = wifiInfo.getBSSID();
-    }
-
-    private void updateConnectionType() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        boolean connected = connectivityManager.getActiveNetworkInfo().isConnected();
-
-        if (!connected) {
-            connectionType = "none";
-            return;
-        }
-
-        int type = connectivityManager.getActiveNetworkInfo().getType();
-
-        switch (type) {
-            case ConnectivityManager.TYPE_WIFI:
-                connectionType = "wifi";
-                break;
-            case ConnectivityManager.TYPE_MOBILE:
-                connectionType = "cellular";
-                break;
-            default:
-                connectionType = "unknown";
-        }
-    }
-
-
-    public Context getContext() {
-        return context;
-    }
-
-    public Configuration getConfiguration() {
-        return configuration;
     }
 
     public String getManufacturer() {
@@ -174,7 +57,7 @@ public class InformationFields {
         return operatingSystem;
     }
 
-    public boolean isCharging() {
+    public String isCharging() {
         return isCharging;
     }
 
@@ -202,7 +85,7 @@ public class InformationFields {
         return locationContext;
     }
 
-    public static InformationFields from(String deviceManufacturer,
+    static InformationFields from(String deviceManufacturer,
                                          String deviceModel,
                                          String chargingState,
                                          String operatingSystem,
@@ -218,9 +101,7 @@ public class InformationFields {
     @Override
     public String toString() {
         return "InformationFields{" +
-                "context=" + context +
-                ", configuration=" + configuration +
-                ", manufacturer='" + manufacturer + '\'' +
+                "manufacturer='" + manufacturer + '\'' +
                 ", model='" + model + '\'' +
                 ", operatingSystem='" + operatingSystem + '\'' +
                 ", isCharging=" + isCharging +

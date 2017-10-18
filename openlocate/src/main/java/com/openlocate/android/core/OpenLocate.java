@@ -119,7 +119,7 @@ public class OpenLocate implements OpenLocateLocationTracker {
                         OpenLocateLocation.from(
                                 location,
                                 info,
-                                InformationFields.from(context, configuration)
+                                InformationFieldsFactory.collectInformationFields(context, configuration)
                         )
                 );
             }

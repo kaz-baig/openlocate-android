@@ -288,7 +288,7 @@ final class LocationServiceHelper {
                     OpenLocateLocation.from(
                             location,
                             advertisingInfo,
-                            InformationFields.from(context, configuration)
+                            InformationFieldsFactory.collectInformationFields(context, configuration)
                     )
             );
             Log.v(TAG, "COUNT - " + locations.size());
