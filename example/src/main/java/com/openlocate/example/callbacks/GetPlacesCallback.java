@@ -26,7 +26,7 @@ import com.openlocate.example.models.SafeGraphPlace;
 
 import java.util.List;
 
-public interface SafeGraphPlaceCallback {
+public interface GetPlacesCallback {
     void onSuccess(List<SafeGraphPlace> places);
     void onFailure(Error error);
 }

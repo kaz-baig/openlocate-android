@@ -32,7 +32,7 @@ import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ClientGenerator {
+public class SafeGraphClientGenerator {
 
     private static Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(Configuration.BASE_URL)

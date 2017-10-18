@@ -22,11 +22,11 @@
 package com.openlocate.example.stores;
 
 import com.openlocate.android.core.OpenLocateLocation;
-import com.openlocate.example.callbacks.SafeGraphPlaceCallback;
+import com.openlocate.example.callbacks.GetPlacesCallback;
 import com.openlocate.example.models.SafeGraphPlace;
 import com.openlocate.example.network.SafeGraphPlaceClient;
 import com.openlocate.example.models.SafeGraphPlaceBody;
-import com.openlocate.example.network.ClientGenerator;
+import com.openlocate.example.network.SafeGraphClientGenerator;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,8 +49,8 @@ public class SafeGraphPlaceStore {
         return sharedInstance;
     }
 
-   public void fetchNearbyPlaces(OpenLocateLocation openLocateLocation, final SafeGraphPlaceCallback callback) {
-       SafeGraphPlaceClient safeGraphPlaceClient = ClientGenerator.createClient(SafeGraphPlaceClient.class);
+   public void fetchNearbyPlaces(OpenLocateLocation openLocateLocation, final GetPlacesCallback callback) {
+       SafeGraphPlaceClient safeGraphPlaceClient = SafeGraphClientGenerator.createClient(SafeGraphPlaceClient.class);
        Call<SafeGraphPlaceBody> call=safeGraphPlaceClient.getAllPlaces(getQueryMap(openLocateLocation));
 
        call.enqueue(new Callback<SafeGraphPlaceBody>() {

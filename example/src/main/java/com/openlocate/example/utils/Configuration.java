@@ -24,4 +24,6 @@ package com.openlocate.example.utils;
 public class Configuration {
     public static final String BASE_URL = "https://api.safegraph.com/";
     public static final String AUTH_TOKEN = "Bearer <YOUR_TOKEN>";
+    public static final String GOOGLE_BASE_URL = "https://maps.googleapis.com/maps/api/";
+    /* place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&type=restaurant&keyword=cruise&key=YOUR_API_KEY*/
 }

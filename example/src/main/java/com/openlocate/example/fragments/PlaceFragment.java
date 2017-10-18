@@ -43,7 +43,7 @@ import com.openlocate.android.exceptions.LocationDisabledException;
 import com.openlocate.android.exceptions.LocationPermissionException;
 import com.openlocate.example.R;
 import com.openlocate.example.adapters.SafeGraphLocationListAdapter;
-import com.openlocate.example.callbacks.SafeGraphPlaceCallback;
+import com.openlocate.example.callbacks.GetPlacesCallback;
 import com.openlocate.example.models.SafeGraphPlace;
 import com.openlocate.example.stores.SafeGraphPlaceStore;
 
@@ -116,7 +116,7 @@ public class PlaceFragment extends Fragment {
     }
 
     private void onFetchCurrentLocation(OpenLocateLocation location) {
-        SafeGraphPlaceStore.sharedInstance().fetchNearbyPlaces(location, new SafeGraphPlaceCallback() {
+        SafeGraphPlaceStore.sharedInstance().fetchNearbyPlaces(location, new GetPlacesCallback() {
             @Override
             public void onSuccess(List<SafeGraphPlace> places) {
                 dismissDialog();
