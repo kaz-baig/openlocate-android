@@ -115,6 +115,43 @@ The following fields are collected by the SDK to be sent to a private or public 
 5. `id_type` - 'aaid' for identifying android advertising type
 6. `ad_id` - Advertising identifier
 7. `ad_opt_out` - Limited ad tracking enabled flag
+8. `course` - Bearing in degrees.
+9. `speed` - Speed in meters/second over ground.
+10. `altitude` - Altitude in meters above the WGS 84 reference ellipsoid.
+
+##### (Optional)
+
+11. `is_charging` - Indicates whether phone is charging or not
+12. `device_manufacturer` - Manufacturer of device
+13. `device_model` - Model of devise
+14. `os` - Operating system installed on Device.
+15. `location_method` - Method of location collected i.e "wifi", "cellular", "fused", "gps"
+16. `location_context` -  Indicates whether the location was collected when the application was foregrounded or backgrounded on the device.
+17. `carrier_name` - Name of the mobile network carrier
+18. `connection_type` - Collects devices's network connection type
+19. `wifi_ssid` - Collects wifi_ssid
+20. `wifi_bssid` - Collects wifi_bssid
+
+### Configuring fields for collection
+
+Optional field collection can be disabled while building the configuration object before passing it to the `startTracking` method.
+
+#### For example
+```java
+Configuration configuration = new Configuration.Builder()
+                    .setUrl(BuildConfig.URL)
+                    .setHeaders(getHeader())
+                    .withoutDeviceManufacturer()
+                    .withoutDeviceModel()
+                    .withoutChargingInfo()
+                    .withoutOperatingSystem()
+                    .withoutCarrierName()
+                    .withoutConnectionType()
+                    .withoutWifiInfo()
+                    .withoutLocationMethod()
+                    .withoutLocationContext()
+                    .build();
+```
 
 ## Communication
 

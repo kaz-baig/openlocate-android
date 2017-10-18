@@ -106,10 +106,6 @@ public class TrackFragment extends Fragment {
             Configuration configuration = new Configuration.Builder()
                     .setUrl(BuildConfig.URL)
                     .setHeaders(getHeader())
-                    .withoutChargingInfo()
-                    .withoutOperatingSystem()
-                    .withoutDeviceModel()
-                    .withoutDeviceManufacturer()
                     .build();
 
             OpenLocate openLocate = OpenLocate.getInstance(activity);
