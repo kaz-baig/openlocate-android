@@ -1,9 +1,7 @@
 
 ![OpenLocate](http://imageshack.com/a/img922/4800/Pihgqn.png)
 
-# OpenLocate
-
-OpenLocate is an open source Android and iOS SDK for mobile location collection.
+We’re building an open SDK to collect location data (like GPS) from phones, for apps like yours
 
 ## Purpose
 
@@ -58,7 +56,7 @@ repositories {
 Add the below line to your app's `build.gradle` inside the `dependencies` section:
     
 ```groovy
-compile 'com.openlocate:openlocate:0.1.8'
+compile 'com.openlocate:openlocate:0.1.10@aar'
 ```
 
 ## Usage
@@ -114,7 +112,7 @@ The following fields are collected by the SDK to be sent to a private or public 
 4. `horizontal_accuracy` - The accuracy of the location being recorded
 5. `id_type` - 'aaid' for identifying android advertising type
 6. `ad_id` - Advertising identifier
-7. `ad_opt_out` - Limited ad tracking enabled flag
+7. `ad_opt_out` - Flag that indicates whether user has enabled "[limit ad tracking](https://developers.google.com/android/reference/com/google/android/gms/ads/identifier/AdvertisingIdClient.Info#isLimitAdTrackingEnabled())" (1: enabled; 0: not enabled)
 8. `course` - Bearing in degrees.
 9. `speed` - Speed in meters/second over ground.
 10. `altitude` - Altitude in meters above the WGS 84 reference ellipsoid.
@@ -153,9 +151,169 @@ Configuration configuration = new Configuration.Builder()
                     .build();
 ```
 
+### Using user's location to query 3rd party Places APIs
+
+To use user's current location, obtain the location by calling `getCurrentLocation` method on OpenLocate. Get the instance by calling `getInstance`. Use the fields collected by SDK to send to 3rd party APIs.
+
+#### For example, to obtain user location:
+
+```java
+OpenLocate openLocate = OpenLocate.getInstance(activity);
+
+openLocate.getCurrentLocation(new OpenLocateLocationCallback() {
+    @Override
+    public void onLocationFetch(OpenLocateLocation location) {
+        //Use location object to obtain fields and pass it to 3rd Party API
+    }
+
+    @Override
+    public void onError(Error error) {
+       //error
+    }
+});
+```
+
+#### For example, to query Google Places API using location:
+
+Google Places API: https://developers.google.com/places/web-service/search
+
+```java
+
+private Map<String, String> getQueryMapGoogle(OpenLocateLocation location ) {
+        Map<String, String> queryMap = new HashMap<>();
+        queryMap.put("location", String.valueOf(location.getLocation().getLatitude()) + "," + String.valueOf(location.getLocation().getLongitude()) );
+        queryMap.put("radius", "500");
+        queryMap.put("type", "restaurant");
+        queryMap.put("keyword", "south");
+        queryMap.put("key", -YOUR GOOGLE PLACES API KEY-);
+        return queryMap;
+}
+
+public void fetchGooglePlaces(OpenLocateLocation openLocateLocation, final SafeGraphPlaceCallback callback) {
+
+        GooglePlaceClient safeGraphPlaceClient = GooglePlaceClientGenerator.createClient(GooglePlaceClient.class);
+        Call<GooglePlaceBody> call=safeGraphPlaceClient.getNearByPlaces(getQueryMapGoogle(openLocateLocation));
+
+        call.enqueue(new Callback<GooglePlaceBody>() {
+            @Override
+            public void onResponse(Call<GooglePlaceBody> call, Response<GooglePlaceBody> response) {
+                if(response.isSuccessful()) {
+                     //TODO Do something with place.
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GooglePlaceBody> call, Throwable t) {
+                    //Error
+            }
+        });
+}
+
+```
+
+#### For example, to query Safegraph Places API using location:
+
+SafeGraph Places API: https://developers.safegraph.com/docs/places.html
+
+```java
+
+private Map<String, String> getQueryMap(OpenLocateLocation location) {
+        Map<String, String> queryMap = new HashMap<>();
+        queryMap.put("advertising_id", location.getAdvertisingInfo().getId());
+        queryMap.put("advertising_id_type", "aaid");
+        queryMap.put("latitude", String.valueOf(location.getLocation().getLatitude()));
+        queryMap.put("longitude", String.valueOf(location.getLocation().getLongitude()));
+        queryMap.put("horizontal_accuracy", String.valueOf(location.getLocation().getHorizontalAccuracy()));
+        return queryMap;
+ }
+
+ private void fetchNearbyPlaces() {
+    // These classes can be found in the example app in this repo
+     SafeGraphPlaceClient safeGraphPlaceClient = ClientGenerator.createClient(SafeGraphPlaceClient.class);
+     Call<SafeGraphPlaceBody> call = safeGraphPlaceClient.getAllPlaces(getQueryMap(openLocateLocation));
+
+     call.enqueue(new Callback<SafeGraphPlaceBody>() {
+         @Override
+         public void onResponse(Call<SafeGraphPlaceBody> call, Response<SafeGraphPlaceBody> response) {
+
+             if (response.isSuccessful()) {
+                 List<SafeGraphPlace> places = response.body().getPlaceList();
+                 //TODO Do something with places
+             }
+         }
+
+         @Override
+         public void onFailure(Call<SafeGraphPlaceBody> call, Throwable t) {
+             //error
+         }
+     });
+ }
+
+```
+
+Similarly, OpenLocate SDK can be used to query additional APIs such as Facebook Places Graph or any other 3rd party places API.
+
+- Facebook Places API - https://developers.facebook.com/docs/places/
+
+#### Note
+
+ClientGenerator is created using Retrofit and its implementation code can found in example code.
+
+### Sample Request Body
+
+This is a sample request body sent by the SDK. 
+```json
+[
+  {
+    "latitude": 37.773972,
+    "longitude": -122.431297,
+    "horizontal_accuracy": "23.670000076293945",
+    "utc_timestamp": 1508369672,
+    "course": "0.0",
+    "speed": "0.0",
+    "altitude": 0,
+    "ad_id": "f109e57e-a02e-41d3-b7c4-c906d1b92331",
+    "ad_opt_out": false,
+    "id_type": "aaid",
+    "device_manufacturer": "motorola",
+    "device_model": "Moto G (5S) Plus",
+    "is_charging": true,
+    "os_version": "Android 7.1.1",
+    "carrier_name": "T Mobile",
+    "wifi_ssid": "\"Jungle\"",
+    "wifi_bssid": "10:fe:ed:8d:b5:7c",
+    "connection_type": "wifi",
+    "location_method": "gps",
+    "location_context": "bground"
+  },
+  {
+    "latitude": 37.773972,
+    "longitude": -122.431297,
+    "horizontal_accuracy": "23.670000076293945",
+    "utc_timestamp": 1508369683,
+    "course": "0.0",
+    "speed": "0.0",
+    "altitude": 0,
+    "ad_id": "f109e57e-a02e-41d3-b7c4-c906d1b92331",
+    "ad_opt_out": false,
+    "id_type": "aaid",
+    "device_manufacturer": "motorola",
+    "device_model": "Moto G (5S) Plus",
+    "is_charging": true,
+    "os_version": "Android 7.1.1",
+    "carrier_name": "T Mobile",
+    "wifi_ssid": "\"Jungle\"",
+    "wifi_bssid": "10:fe:ed:8d:b5:7c",
+    "connection_type": "wifi",
+    "location_method": "gps",
+    "location_context": "bground"
+  }
+]
+```
+
 ## Communication
 
-- If you **need help**, use [Stack Overflow](https://stackoverflow.com). (Tag 'OpenLocate') 
+- If you **need help**, post a question to the [discussion forum](https://groups.google.com/a/openlocate.org/d/forum/openlocate), or tag a question with 'OpenLocate' on [Stack Overflow](https://stackoverflow.com).
 - If you **found a bug**, open an issue.
 - If you **have a feature request**, open an issue.
 - If you **want to contribute**, submit a pull request.

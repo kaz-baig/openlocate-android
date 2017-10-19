@@ -29,17 +29,22 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.openlocate.android.callbacks.OpenLocateLocationCallback;
 import com.openlocate.android.config.Configuration;
+import com.openlocate.android.exceptions.GooglePlayServicesNotAvailable;
 import com.openlocate.android.exceptions.InvalidConfigurationException;
 import com.openlocate.android.exceptions.LocationDisabledException;
 import com.openlocate.android.exceptions.LocationPermissionException;
 
 public class OpenLocate implements OpenLocateLocationTracker {
+
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private static OpenLocate sharedInstance = null;
     private static final String TAG = OpenLocate.class.getSimpleName();
@@ -65,10 +70,9 @@ public class OpenLocate implements OpenLocateLocationTracker {
     }
 
     @Override
-    public void startTracking(final Configuration configuration) throws InvalidConfigurationException, LocationDisabledException, LocationPermissionException {
-
+    public void startTracking(final Configuration configuration)
+            throws InvalidConfigurationException, LocationDisabledException, LocationPermissionException, GooglePlayServicesNotAvailable {
         validateTrackingCapabilities(configuration);
-        this.configuration = configuration;
 
         FetchAdvertisingInfoTask task = new FetchAdvertisingInfoTask(context, new FetchAdvertisingInfoTaskCallback() {
             @Override
@@ -157,7 +161,10 @@ public class OpenLocate implements OpenLocateLocationTracker {
         intent.putExtra(Constants.TRANSMISSION_INTERVAL_KEY, transmissionInterval);
     }
 
-    private void validateTrackingCapabilities(Configuration configuration) throws InvalidConfigurationException, LocationPermissionException, LocationDisabledException {
+    private void validateTrackingCapabilities(Configuration configuration)
+            throws InvalidConfigurationException, LocationPermissionException, LocationDisabledException, GooglePlayServicesNotAvailable {
+
+        validateGooglePlayServices();
         warnIfLocationServicesAreAlreadyRunning();
         validateConfiguration(configuration);
         validateLocationPermission();
@@ -201,6 +208,20 @@ public class OpenLocate implements OpenLocateLocationTracker {
             throw new LocationDisabledException(
                     message
             );
+        }
+    }
+
+    private void validateGooglePlayServices() throws GooglePlayServicesNotAvailable {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            String message = "Google Play Services is not available on this device.";
+            boolean isUserResolvableError = false;
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                message = "Google Play Services is not enabled/installed on this device.";
+                isUserResolvableError = true;
+            }
+            throw new GooglePlayServicesNotAvailable(message, isUserResolvableError);
         }
     }
 
