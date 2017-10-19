@@ -48,7 +48,7 @@ public final class OpenLocateLocation implements JsonObjectType {
         static final String IS_CHARGING = "is_charging";
         static final String DEVICE_MANUFACTURER = "device_manufacturer";
         static final String DEVICE_MODEL = "device_model";
-        static final String OPERATING_SYSTEM = "os";
+        static final String OPERATING_SYSTEM = "os_version";
 
         static final String LOCATION_METHOD = "location_method";
         static final String LOCATION_CONTEXT = "location_context";
