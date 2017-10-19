@@ -50,7 +50,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class OpenLocate implements OpenLocateLocationTracker {
+public class OpenLocate implements OpenLocateLocationTransmitter {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
@@ -96,14 +96,14 @@ public class OpenLocate implements OpenLocateLocationTracker {
                 new IntentFilter(Constants.INTENT_SERVICE_STARTED));
     }
 
-    public static OpenLocate getInstance(Context context) {
+    public static OpenLocateLocationTracker getInstance(Context context) {
         if (sharedInstance == null) {
             sharedInstance = new OpenLocate(context);
         }
         return sharedInstance;
     }
 
-    public static OpenLocate getTransmitOnlyInstance(Context context) {
+    public static OpenLocateLocationTransmitter getTransmitOnlyInstance(Context context) {
         if (sharedInstance == null) {
             sharedInstance = new OpenLocate(context);
         }

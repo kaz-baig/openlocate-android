@@ -46,6 +46,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.openlocate.android.callbacks.AddLocationCallback;
 import com.openlocate.android.config.Configuration;
 import com.openlocate.android.core.OpenLocate;
+import com.openlocate.android.core.OpenLocateLocationTracker;
 import com.openlocate.android.exceptions.GooglePlayServicesNotAvailable;
 import com.openlocate.android.exceptions.InvalidConfigurationException;
 import com.openlocate.android.exceptions.LocationDisabledException;
@@ -64,7 +65,7 @@ public class TrackFragment extends Fragment {
     private Activity activity;
     private Button startButton;
     private Button stopButton;
-    private OpenLocate openLocate;
+    private OpenLocateLocationTracker openLocate;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private Configuration configuration;
@@ -102,7 +103,7 @@ public class TrackFragment extends Fragment {
             }
         });
 
-        OpenLocate openLocate = OpenLocate.getInstance(activity);
+        OpenLocateLocationTracker openLocate = OpenLocate.getInstance(activity);
         if (openLocate.isTracking()) {
             onStartService();
         }

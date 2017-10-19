@@ -39,6 +39,7 @@ import android.widget.Toast;
 import com.openlocate.android.callbacks.OpenLocateLocationCallback;
 import com.openlocate.android.core.OpenLocate;
 import com.openlocate.android.core.OpenLocateLocation;
+import com.openlocate.android.core.OpenLocateLocationTransmitter;
 import com.openlocate.android.exceptions.LocationDisabledException;
 import com.openlocate.android.exceptions.LocationPermissionException;
 import com.safegraph.transmitonlyexample.R;
@@ -92,7 +93,7 @@ public class PlaceFragment extends Fragment {
 
     public void currentPlace() {
         try {
-            OpenLocate openLocate = OpenLocate.getInstance(activity);
+            OpenLocateLocationTransmitter openLocate = OpenLocate.getTransmitOnlyInstance(activity);
             showDialog();
             openLocate.getCurrentLocation(new OpenLocateLocationCallback() {
                 @Override

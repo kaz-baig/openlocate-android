@@ -33,7 +33,7 @@ import com.openlocate.android.exceptions.LocationPermissionException;
 
 import java.util.List;
 
-interface OpenLocateLocationTracker {
+public interface OpenLocateLocationTracker {
 
     void startTracking(Configuration configuration)
             throws InvalidConfigurationException,
@@ -44,10 +44,6 @@ interface OpenLocateLocationTracker {
     void getCurrentLocation(OpenLocateLocationCallback callback)
             throws LocationDisabledException,
             LocationPermissionException;
-
-    void addLocation(Location location) throws InvalidConfigurationException, LocationDisabledException, LocationPermissionException, GooglePlayServicesNotAvailable;
-
-    void addLocations(List<Location> locations) throws InvalidConfigurationException, LocationDisabledException, LocationPermissionException, GooglePlayServicesNotAvailable;
 
     void stopTracking();
 
