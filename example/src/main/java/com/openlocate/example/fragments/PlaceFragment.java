@@ -43,16 +43,16 @@ import com.openlocate.android.exceptions.LocationDisabledException;
 import com.openlocate.android.exceptions.LocationPermissionException;
 import com.openlocate.example.R;
 import com.openlocate.example.adapters.SafeGraphLocationListAdapter;
-import com.openlocate.example.callbacks.GooglePlacesApiCallback;
-import com.openlocate.example.models.GooglePlace;
-import com.openlocate.example.stores.GooglePlacesStore;
+import com.openlocate.example.callbacks.SafeGraphPlaceCallback;
+import com.openlocate.example.models.SafeGraphPlace;
+import com.openlocate.example.stores.SafeGraphPlaceStore;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlaceFragment extends Fragment {
 
-    public List<GooglePlace> places;
+    public List<SafeGraphPlace> places;
 
     private RecyclerView recyclerView;
     private TextView fetchLocation;
@@ -116,9 +116,9 @@ public class PlaceFragment extends Fragment {
     }
 
     private void onFetchCurrentLocation(OpenLocateLocation location) {
-        GooglePlacesStore.sharedInstance().fetchNearbyPlaces(location, new GooglePlacesApiCallback() {
+        SafeGraphPlaceStore.sharedInstance().fetchNearbyPlaces(location, new SafeGraphPlaceCallback() {
             @Override
-            public void onSuccess(List<GooglePlace> places) {
+            public void onSuccess(List<SafeGraphPlace> places) {
                 dismissDialog();
                 fetchLocation.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);

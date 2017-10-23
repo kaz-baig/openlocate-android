@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2017 OpenLocate
  *
@@ -20,19 +19,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.openlocate.example.network;
+package com.openlocate.example.callbacks;
 
-import com.openlocate.example.models.GooglePlacesApiBody;
 
-import java.util.Map;
+import com.openlocate.example.models.SafeGraphPlace;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.QueryMap;
+import java.util.List;
 
-public interface GooglePlacesApiClient {
-
-    @GET("places/v1/nearby")
-    Call<GooglePlacesApiBody>
-    getAllPlaces(@QueryMap Map<String, String> queryMap);
+public interface SafeGraphPlaceCallback {
+    void onSuccess(List<SafeGraphPlace> places);
+    void onFailure(Error error);
 }

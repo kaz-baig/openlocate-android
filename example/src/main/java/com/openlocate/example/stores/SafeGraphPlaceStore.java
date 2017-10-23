@@ -22,10 +22,10 @@
 package com.openlocate.example.stores;
 
 import com.openlocate.android.core.OpenLocateLocation;
-import com.openlocate.example.callbacks.GooglePlacesApiCallback;
-import com.openlocate.example.models.GooglePlace;
-import com.openlocate.example.network.GooglePlacesApiClient;
-import com.openlocate.example.models.GooglePlacesApiBody;
+import com.openlocate.example.callbacks.SafeGraphPlaceCallback;
+import com.openlocate.example.models.SafeGraphPlace;
+import com.openlocate.example.network.SafeGraphPlaceClient;
+import com.openlocate.example.models.SafeGraphPlaceBody;
 import com.openlocate.example.network.ClientGenerator;
 
 import java.util.HashMap;
@@ -37,28 +37,28 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class GooglePlacesStore {
+public class SafeGraphPlaceStore {
 
-    private static GooglePlacesStore sharedInstance = null;
+    private static SafeGraphPlaceStore sharedInstance = null;
 
-    public static GooglePlacesStore sharedInstance() {
+    public static SafeGraphPlaceStore sharedInstance() {
         if (sharedInstance == null) {
-            sharedInstance = new GooglePlacesStore();
+            sharedInstance = new SafeGraphPlaceStore();
         }
 
         return sharedInstance;
     }
 
-   public void fetchNearbyPlaces(OpenLocateLocation openLocateLocation, final GooglePlacesApiCallback callback) {
+   public void fetchNearbyPlaces(OpenLocateLocation openLocateLocation, final SafeGraphPlaceCallback callback) {
 
-       GooglePlacesApiClient googlePlacesApiClient = ClientGenerator.createClient(GooglePlacesApiClient.class);
-       Call<GooglePlacesApiBody> call=googlePlacesApiClient.getAllPlaces(getQueryMap(openLocateLocation));
+       SafeGraphPlaceClient safeGraphPlaceClient = ClientGenerator.createClient(SafeGraphPlaceClient.class);
+       Call<SafeGraphPlaceBody> call=safeGraphPlaceClient.getAllPlaces(getQueryMap(openLocateLocation));
 
-       call.enqueue(new Callback<GooglePlacesApiBody>() {
+       call.enqueue(new Callback<SafeGraphPlaceBody>() {
            @Override
-           public void onResponse(Call<GooglePlacesApiBody> call, Response<GooglePlacesApiBody> response) {
+           public void onResponse(Call<SafeGraphPlaceBody> call, Response<SafeGraphPlaceBody> response) {
                if(response.isSuccessful()) {
-                   List<GooglePlace> places = response.body().getPlaceList();
+                   List<SafeGraphPlace> places = response.body().getPlaceList();
                    if (places != null && !places.isEmpty()) {
                        callback.onSuccess(places);
                    } else {
@@ -70,7 +70,7 @@ public class GooglePlacesStore {
            }
 
            @Override
-           public void onFailure(Call<GooglePlacesApiBody> call, Throwable t) {
+           public void onFailure(Call<SafeGraphPlaceBody> call, Throwable t) {
                callback.onFailure(new Error(t));
            }
        });

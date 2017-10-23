@@ -23,7 +23,7 @@ package com.openlocate.example.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class GooglePlace {
+public class SafeGraphPlace {
     private String name;
 
     @SerializedName("street_address")
