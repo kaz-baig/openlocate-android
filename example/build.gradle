@@ -14,6 +14,19 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
+Properties properties = new Properties()
+def safegraphToken
+def safegraphProviderId
+
+if (project.file('local.properties').canRead()) {
+
+    properties.load(new FileInputStream(project.file('local.properties')))
+    safegraphToken = properties.getProperty('safegraph.token')
+    safegraphProviderId = properties.getProperty('safegraph.providerId')
+
+} else {
+    throw new GradleException("Could not read local.properties!")
+}
 
 android {
     compileSdkVersion 25
@@ -33,34 +46,35 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', 'TOKEN', "\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6ImluZ2VzdDoxN2QzNzVlYy1hMmVhLTExZTctODA3OC0wMmFlNDdiOWZmNmIiLCJwcm92aWRlcl9pZCI6MTcyLCJleHBpcmVzSW4iOiI1eSIsImF1ZCI6Imh0dHBzOi8vSW5nZXN0U2VydmVyIn0.TadKLrE672a6MHJdQcFkAK53JSpSnu-MxW4iJC-zUeU\""
-            buildConfigField 'String', 'UUID', "\"17d375ec-a2ea-11e7-8078-02ae47b9ff6b\""
-            buildConfigField 'String', 'URL', "\"https://api.safegraph.com/v1/provider/17d375ec-a2ea-11e7-8078-02ae47b9ff6b/devicelocation\""
+            buildConfigField 'String', 'TOKEN', "\""+ safegraphToken + "\""
+            buildConfigField 'String', 'UUID', "\"" + safegraphProviderId + "\""
+            buildConfigField 'String', 'URL', "\"https://api.safegraph.com/v1/provider/" + safegraphProviderId + "/devicelocation\""
         }
 
         debug {
-            buildConfigField 'String', 'TOKEN', "\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzY29wZSI6ImluZ2VzdDoxN2QzNzVlYy1hMmVhLTExZTctODA3OC0wMmFlNDdiOWZmNmIiLCJwcm92aWRlcl9pZCI6MTcyLCJleHBpcmVzSW4iOiI1eSIsImF1ZCI6Imh0dHBzOi8vSW5nZXN0U2VydmVyIn0.TadKLrE672a6MHJdQcFkAK53JSpSnu-MxW4iJC-zUeU\""
-            buildConfigField 'String', 'UUID', "\"17d375ec-a2ea-11e7-8078-02ae47b9ff6b\""
-            buildConfigField 'String', 'URL', "\"https://api.safegraph.com/v1/provider/17d375ec-a2ea-11e7-8078-02ae47b9ff6b/devicelocation\""
+            buildConfigField 'String', 'TOKEN', "\""+ safegraphToken + "\""
+            buildConfigField 'String', 'UUID', "\"" + safegraphProviderId + "\""
+            buildConfigField 'String', 'URL', "\"https://api.safegraph.com/v1/provider/" + safegraphProviderId + "/devicelocation\""
+
         }
     }
-}
 
-dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:design:25.3.1'
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
-    compile project(':openlocate')
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
-        transitive = true;
+    dependencies {
+        compile fileTree(include: ['*.jar'], dir: 'libs')
+        compile 'com.android.support:design:25.3.1'
+        androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+            exclude group: 'com.android.support', module: 'support-annotations'
+        })
+        compile 'com.android.support:appcompat-v7:25.3.1'
+        compile 'com.android.support.constraint:constraint-layout:1.0.2'
+        testCompile 'junit:junit:4.12'
+        compile project(':openlocate')
+        compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+            transitive = true;
+        }
+        compile 'com.squareup.retrofit2:retrofit:2.3.0'
+        compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+        compile 'com.android.support:cardview-v7:25.3.1'
+
     }
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
-    compile 'com.android.support:cardview-v7:25.3.1'
-
 }
