@@ -39,6 +39,16 @@ Openlocate uses the following permissions:
 * INTERNET - Required to open network sockets.
 * ACCESS_WIFI_STATE - Required to access information about Wi-Fi networks.
 
+## How OpenLocate Works
+
+OpenLocate initialises a  background service alongside your application. This background service collects  and transmits location updates.
+
+The location updates rely on Google Play Services' `Fused Location Provider`. The Fused Location Provider API allows the user to select a “quality of service” that determines the accuracy and battery drain of location updates. By default, OpenLocate sets a enhanced for battery performance while maintaining acceptable location update accuracy.
+
+The location collection interval is set at a default of 3 minutes. Actual  location updates received can be more frequent than this however, as OpenLocate will  receive passive fixes (location updates triggered by other applications) if there are any.
+
+In order to minimize battery usage and network traffic to your server, the location updates are not transmitted immediately, but rather batched locally for sending at a defined interval. The default transmission interval is one hour. Once successfully transmitted, the location updates are no longer stored on the device.
+
 ## Installation
 
 ### Adding to your project
@@ -309,16 +319,6 @@ This is a sample request body sent by the SDK.
 ```
 
 If you want to have the SDK send data to your own AWS s3 environment for example, look into setting up an [Kinesis firehose](https://aws.amazon.com/kinesis/firehose/) according to the SDK request above.
-
-## How OpenLocate Works
-
-OpenLocate initialises a  background service alongside your application. This background service collects  and transmits location updates.
-
-The location updates rely on `Google Place Services` `Fused Location Provider`. The Fused Location Provider API allows the user to select a “quality of service” that determines the accuracy and battery drain of location updates. By default, OpenLocate sets a enhanced for battery performance while maintaining acceptable location update accuracy.
-
-The location collection interval is set at a default of 3 minutes. Actual  location updates received can be more frequent than this however, as OpenLocate will  receive passive fixes (location updates triggered by other applications) if there are any.
-
-In order to minimize battery usage and network traffic to your server, the location updates are not transmitted immediately, but rather batched locally for sending at a defined interval. The default transmission interval is one hour. Once successfully transmitted, the location updates are no longer stored on the device.
 
 ## Location Permission Opt-In Best Practices
 
