@@ -310,6 +310,22 @@ This is a sample request body sent by the SDK.
 
 If you want to have the SDK send data to your own AWS s3 environment for example, look into setting up an [Kinesis firehose](https://aws.amazon.com/kinesis/firehose/) according to the SDK request above.
 
+## How OpenLocate Works
+
+OpenLocate initialises a  background service alongside your application. This background service collects  and transmits location updates.
+
+The location updates rely on `Google Place Services` `Fused Location Provider`. The Fused Location Provider API allows the user to select a “quality of service” that determines the accuracy and battery drain of location updates. By default, OpenLocate sets a enhanced for battery performance while maintaining acceptable location update accuracy.
+
+The location collection interval is set at a default of 3 minutes. Actual  location updates received can be more frequent than this however, as OpenLocate will  receive passive fixes (location updates triggered by other applications) if there are any.
+
+In order to minimize battery usage and network traffic to your server, the location updates are not transmitted immediately, but rather batched locally for sending at a defined interval. The default transmission interval is one hour. Once successfully transmitted, the location updates are no longer stored on the device.
+
+## Location Permissions Opt-In Best Practices
+
+OpenLocate requires users to accept the Android's Location Permission in order to work correctly. It is therefore important to understand when and how to prompt for the location permission in order to maximize opt-in rates from users. OpenLocate takes care of prompting the location permission atomically for you when the `startTracking()` method is invoked. OpenLocate also takes care of remembering this started state across app launches, so you only need to invoke `startTracking()` once. You must decide  the optimal time to invoke `startTracking()` within your app however. Below are several articles that explain the different approaches that can be taken. Ensure you choose one that fits your app’s needs:
+- https://medium.com/product-breakdown/5-ways-to-ask-users-for-ios-permissions-a8e199cc83ad
+- https://www.doronkatz.com/articles/the-right-way-to-ask-users-for-ios-permissions-medium-1
+
 ## Communication
 
 - If you **need help**, post a question to the [discussion forum](https://groups.google.com/a/openlocate.org/d/forum/openlocate), or tag a question with 'OpenLocate' on [Stack Overflow](https://stackoverflow.com).
