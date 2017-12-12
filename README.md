@@ -321,48 +321,49 @@ To send user's location data to a databin via the Data Drop Web API:
 OpenLocate openLocate = OpenLocate.getInstance();
 
 openLocate.getCurrentLocation(new OpenLocateLocationCallback() {
-  @Override
-  public void onLocationFetch(OpenLocateLocation location) {
+	@Override
+	public void onLocationFetch(OpenLocateLocation location) {
 		RequestQueue queue = Volley.newRequestQueue(context);
 		url = "https://datadrop.wolframcloud.com/api/v1.0/Add?bin=<YOUR_BIN_ID>";
 		StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-			new Response.Listener<String>()
-			{
-        @Override
-        public void onResponse(String response) {
-            Log.d("Response", response);
-        }
-    	},
-    	new Response.ErrorListener()
-    	{
-    		@Override
-        public void onErrorResponse(VolleyError error) {
-            Log.d("Error.Response", response);
-      	}
-    	}
+		new Response.Listener<String>()
+		{
+			@Override
+			public void onResponse(String response) {
+				Log.d("Response", response);
+			}
+		},
+		new Response.ErrorListener()
+		{
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				Log.d("Error.Response", response);
+			}
+		}
 		) {
-	    @Override
-	    protected Map<String, String> getParams()
-	    {
+			@Override
+			protected Map<String, String> getParams()
+			{
 				// parameters to pass into databin
-        Map<String, String>  params = new HashMap<String, String>();
-        params.put("latitude", location.getLocation().getLatitude());
-        params.put("longitude", location.getLocation().getLongitude());
+				Map<String, String>  params = new HashMap<String, String>();
+				params.put("latitude", location.getLocation().getLatitude());
+				params.put("longitude", location.getLocation().getLongitude());
 				params.put("altitude", location.getLocation().getAltitude());
 
-        return params;
-	    }
+				return params;
+			}
 		};
 
-	queue.add(postRequest);
+		queue.add(postRequest);
 
-  }
+	}
 
-  @Override
-  public void onError(Error error) {
-     Log.d("Error", error);
-  }
+	@Override
+	public void onError(Error error) {
+		Log.d("Error", error);
+	}
 });
+
 
 ```
 
