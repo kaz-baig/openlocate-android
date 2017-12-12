@@ -62,7 +62,7 @@ repositories {
 ```
 
 Add the below line to your app's `build.gradle` inside the `dependencies` section:
-    
+
 ```groovy
 compile 'com.openlocate:openlocate:1.+'
 ```
@@ -93,7 +93,7 @@ public class MyApplication extends Application {
         OpenLocate.Configuration config = new OpenLocate.Configuration.Builder(this, BuildConfig.URL)
             .setHeaders(<Your Headers>)
             .build();
-        
+
         OpenLocate.initialize(config);
     }
 }
@@ -110,16 +110,16 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        
+
         String url = "https://api.safegraph.com/v1/provider/<UUID>/devicelocation"
-        
+
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Authorization", "Bearer <TOKEN>");
 
         OpenLocate.Configuration config = new OpenLocate.Configuration.Builder(this, url)
             .setHeaders(headers)
             .build();
-        
+
         OpenLocate.initialize(config);
     }
 }
@@ -129,7 +129,7 @@ public class MyApplication extends Application {
 Activity should be passed to method below. Library will request permission for you.
 
 ```java
- 
+
 OpenLocate.getInstance().startTracking(activity);
 ```
 `startTracking` method can be called only once: library will restart tracking on next initialization.
@@ -298,9 +298,77 @@ Similarly, OpenLocate SDK can be used to query additional APIs such as Facebook 
 
 ClientGenerator is created using Retrofit and its implementation code can found in example code.
 
+#### Connecting user's location data to Wolfram Cloud for analytics using [Wolfram Data Drop](https://datadrop.wolframcloud.com/)
+
+Data Drop is a service from Wolfram Research that makes it easy to collect data in a manner that proactively sets it up for computation, visualization, analysis, or other data processing operations. **Databins** store and add semantics to data while making it instantly accessible from all Wolfram Language and other systems through the Wolfram Cloud.
+
+Once in a Databin, you can use Wolfram Language to create visualizations like the following, which were generated using UFO sighting location data from the [Wolfram Data Repository](https://datarepository.wolframcloud.com/):
+
+<p align="center"><img src="https://www.wolframcloud.com/objects/q-partnerships/openlocate/geohistogram" alt="UFO Sightings GeoHistogram" align="center"></p>
+
+<p align="center"><img src="https://www.wolframcloud.com/objects/q-partnerships/openlocate/geoplot" alt="UFO Sightings Plot" align="center"></p>
+
+<p align="center"><img src="https://www.wolframcloud.com/objects/q-partnerships/openlocate/vertical-bar" alt="UFO Sightings Vertical Bar Chart" align="center"></p>
+
+<p align="center"><img src="https://www.wolframcloud.com/objects/q-partnerships/openlocate/horizontal-bar" alt="UFO Sightings Horizontal Bar Chart" align="center"></p>
+
+Refer to the [Data Drop Quick Reference](https://www.wolfram.com/datadrop/quick-reference/home/) to learn more.
+
+To send user's location data to a databin via the Data Drop Web API:
+
+```java
+
+OpenLocate openLocate = OpenLocate.getInstance();
+
+openLocate.getCurrentLocation(new OpenLocateLocationCallback() {
+  @Override
+  public void onLocationFetch(OpenLocateLocation location) {
+		RequestQueue queue = Volley.newRequestQueue(context);
+		url = "https://datadrop.wolframcloud.com/api/v1.0/Add?bin=<YOUR_BIN_ID>";
+		StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+			new Response.Listener<String>()
+			{
+        @Override
+        public void onResponse(String response) {
+            Log.d("Response", response);
+        }
+    	},
+    	new Response.ErrorListener()
+    	{
+    		@Override
+        public void onErrorResponse(VolleyError error) {
+            Log.d("Error.Response", response);
+      	}
+    	}
+		) {
+	    @Override
+	    protected Map<String, String> getParams()
+	    {
+				// parameters to pass into databin
+        Map<String, String>  params = new HashMap<String, String>();
+        params.put("latitude", location.getLocation().getLatitude());
+        params.put("longitude", location.getLocation().getLongitude());
+				params.put("altitude", location.getLocation().getAltitude());
+
+        return params;
+	    }
+		};
+
+	queue.add(postRequest);
+
+  }
+
+  @Override
+  public void onError(Error error) {
+     Log.d("Error", error);
+  }
+});
+
+```
+
 ### Sample Request Body
 
-This is a sample request body sent by the SDK. 
+This is a sample request body sent by the SDK.
 ```json
 [
   {
